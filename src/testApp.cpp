@@ -1,9 +1,9 @@
 /**
  *
- * OFDevCon Example Code Sprint
- * Quaternion Example for plotting latitude and longitude onto a sphere
+ * RealDirections
+ * Based on Quaternion Example for plotting latitude and longitude onto a sphere
  *
- * Created by James George on 2/23/2012
+ * Created by Xavier Fischer on 10/01/2013
  */
 
 #include "testApp.h"
@@ -52,10 +52,11 @@ void testApp::setup(){
 #ifdef __APPLE__
 	loadSegments( boundaries, "unix-boundaries-simple.txt" );
 #else
-    loadSegments( boundaries, "boundaries-simple.txt" );
+    //loadSegments( boundaries, "boundaries-simple.txt" );
 #endif
 	addToMesh( boundaries, ofFloatColor(1.0) /* ofColor::black */);
     
+    createGraticules();
     
     //GUI
     bShowHelp = true;
@@ -63,23 +64,16 @@ void testApp::setup(){
     gui.setup(); // most of the time you don't need a name
 	//gui.add(camPos.setup("camera position", ofVec3f(0,0,500), ofVec3f(0,0,radius), ofVec3f(500,500,500)));
     gui.add(camNearClip.setup("near plane", 0, 0, radius*3.));
-    gui.add(mouseInput.setup("mouse input", true));
-	gui.add(drawAxis.setup("draw axis", false));
-    
     drawAllAxes = false;
     changeCamPosition = false;
     
 }
 
+
+
 //--------------------------------------------------------------
 void testApp::update(){
 	//ofSetWindowTitle(ofToString(ofGetFrameRate()));
-    
-    if (mouseInput){
-        cam.enableMouseInput();
-    } else {
-        cam.disableMouseInput();
-    }
 }
 
 //--------------------------------------------------------------
@@ -131,7 +125,9 @@ void testApp::draw(){
 	//draw a translucent wireframe sphere (ofNoFill() is on)
 	//add an extra spin at the rate of 1 degree per frame
 	//ofRotate(ofGetFrameNum(), 0, 1, 0);
-	ofDrawSphere(0, 0, 0, radius);
+	//ofDrawSphere(0, 0, 0, radius);
+    ofSetColor(64);
+    graticules.draw();
     
 	ofSetColor(255);
     //ofSetColor(ofColor::black);
@@ -159,7 +155,7 @@ void testApp::draw(){
 		ofDrawBitmapString(cities[i].name, worldPoint );
 	}
     
-    mesh.draw();
+    //mesh.draw();
     
 	cam.end();
     
@@ -255,6 +251,48 @@ void testApp::addToMesh( vector< vector<ofPoint> > & segments, ofFloatColor _col
 			lastPoint = worldPoint;
 		}
 	}
+}
+
+//--------------------------------------------------------------
+void testApp::createGraticules(){
+    ofVec3f center = ofVec3f(0,0,300);
+    ofColor color = ofColor(40,40,40);
+    
+    graticules.setMode(OF_PRIMITIVE_LINE_LOOP);
+    graticules.clear();
+    
+    for (int lon = -90; lon <=90; lon+=15) {
+        for (int lat = 0; lat <=360; lat+=15) {
+         
+            ofQuaternion latRot, longRot;
+			latRot.makeRotate(lat, -1, 0, 0);
+			longRot.makeRotate(lon, 0, 1, 0);
+            
+			ofVec3f worldPoint = latRot * longRot * center;
+
+            //graticules.addColor( color );
+            graticules.addVertex(worldPoint);
+        }
+    }
+
+    /*
+    for (int lat = -75; lat <=75; lat+=15) {
+        for (int lon = -180; lon <=180; lon+=1) {
+            
+            ofQuaternion latRot, longRot;
+			latRot.makeRotate(lat, -1, 0, 0);
+			longRot.makeRotate(lon, 0, 1, 0);
+            
+			ofVec3f worldPoint = latRot * longRot * center;
+            
+            //graticules.addColor( color );
+            graticules.addVertex(worldPoint);
+        }
+    }
+     */
+
+    
+    
 }
 
 //--------------------------------------------------------------
