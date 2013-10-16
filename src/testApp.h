@@ -35,7 +35,7 @@ private:
 	vector< vector<ofPoint> > boundaries;
     
 	ofMesh mesh;
-    ofMesh graticules;
+    ofVboMesh graticules;
     
 	ofEasyCam cam;
     
@@ -48,7 +48,7 @@ private:
     bool bShowHelp;
     
 	ofxVec3Slider camPos;
-    ofxFloatSlider camNearClip;
+    //ofxFloatSlider camNearClip;
     
 	ofxPanel gui;
     

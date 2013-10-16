@@ -12,7 +12,8 @@
 void testApp::setup(){
     
 	ofSetFrameRate(60);
-	ofEnableAlphaBlending();
+	//ofEnableAlphaBlending();
+    ofEnableDepthTest();
     ofSetSphereResolution(200);
 	//NoFill();
 	ofFill();
@@ -63,7 +64,7 @@ void testApp::setup(){
     
     gui.setup(); // most of the time you don't need a name
 	//gui.add(camPos.setup("camera position", ofVec3f(0,0,500), ofVec3f(0,0,radius), ofVec3f(500,500,500)));
-    gui.add(camNearClip.setup("near plane", 0, 0, radius*3.));
+    //gui.add(camNearClip.setup("near plane", 0, 0, radius*3.));
     drawAllAxes = false;
     changeCamPosition = false;
     
@@ -116,16 +117,9 @@ void testApp::draw(){
 	}
     
     
-    cam.setNearClip(camNearClip);
+    cam.setNearClip(0.);
     
 	//translate so that the center of the screen is 0,0
-	ofSetColor(255, 255, 255, 20);
-    //ofSetColor(ofColor::white);
-    
-	//draw a translucent wireframe sphere (ofNoFill() is on)
-	//add an extra spin at the rate of 1 degree per frame
-	//ofRotate(ofGetFrameNum(), 0, 1, 0);
-	//ofDrawSphere(0, 0, 0, radius);
     ofSetColor(64);
     graticules.draw();
     
@@ -155,7 +149,7 @@ void testApp::draw(){
 		ofDrawBitmapString(cities[i].name, worldPoint );
 	}
     
-    //mesh.draw();
+    mesh.draw();
     
 	cam.end();
     
@@ -255,23 +249,39 @@ void testApp::addToMesh( vector< vector<ofPoint> > & segments, ofFloatColor _col
 
 //--------------------------------------------------------------
 void testApp::createGraticules(){
-    ofVec3f center = ofVec3f(0,0,300);
-    ofColor color = ofColor(40,40,40);
     
-    graticules.setMode(OF_PRIMITIVE_LINE_LOOP);
+    ofVec3f center = ofVec3f(0,0,300);
+    
+    graticules.setMode(OF_PRIMITIVE_LINES);
     graticules.clear();
     
-    for (int lon = -90; lon <=90; lon+=15) {
-        for (int lat = 0; lat <=360; lat+=15) {
-         
-            ofQuaternion latRot, longRot;
+    ofQuaternion latRot, longRot;
+    
+    // meridians
+    for (int lon = 0; lon <=360; lon+=15) {
+        for (int lat = 90; lat <=90+360; lat+=1) {
+            
 			latRot.makeRotate(lat, -1, 0, 0);
 			longRot.makeRotate(lon, 0, 1, 0);
             
-			ofVec3f worldPoint = latRot * longRot * center;
-
-            //graticules.addColor( color );
-            graticules.addVertex(worldPoint);
+            graticules.addVertex(latRot * longRot * center);
+            
+            latRot.makeRotate(lat+1, -1, 0, 0);
+            graticules.addVertex(latRot * longRot * center);
+        }
+    }
+    
+    // parallels
+    for (int lat = 75; lat >=-75; lat-=15) {  // north to south
+        for (int lon = 0; lon <=360; lon+=1) {
+            
+			latRot.makeRotate(lat, -1, 0, 0);
+			longRot.makeRotate(lon, 0, 1, 0);
+            
+            graticules.addVertex(latRot * longRot * center);
+            
+            longRot.makeRotate(lon+1, 0, 1, 0);
+            graticules.addVertex(latRot * longRot * center);
         }
     }
 
