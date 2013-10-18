@@ -1,18 +1,19 @@
 /**
  *
- * OFDevCon Example Code Sprint
- * Quaternion Example for plotting latitude and longitude onto a sphere
+ * RealDirections
+ * Based on Quaternion Example for plotting latitude and longitude onto a sphere
  *
- * Created by James George on 2/23/2012
+ * Created by Xavier Fischer on 10/01/2013
  */
 
 #include "testApp.h"
 
 //--------------------------------------------------------------
 void testApp::setup(){
-    
+    ofEnableSmoothing();
 	ofSetFrameRate(60);
-	ofEnableAlphaBlending();
+	//ofEnableAlphaBlending();
+    ofEnableDepthTest();
     ofSetSphereResolution(200);
 	//NoFill();
 	ofFill();
@@ -28,27 +29,22 @@ void testApp::setup(){
 	// here is a list of big cities and their positions
 	// http://www.infoplease.com/ipa/A0001796.html
     
-	City newyork = { "new york", 40+47/60., -73 + 58/60. };
-	City tokyo = { "tokyo", 35 + 40./60, 139 + 45/60. };
-	City london = { "london", 51 + 32/60., -5./60. };
-	City shanghai = { "shanghai", 31 + 10/60., 121 + 28/60. };
-	City buenosaires = { "buenos aires", -34 + 35/60., -58 + 22/60. };
-	City melbourne = { "melbourne" , -37 + 47/60., 144 + 58/60. };
-	City detroit = { "detroit", 42 + 19/60., -83 + 2 / 60. };
-	City aix = { "aix-en-provence", 43.529, 5.443 };
-    
-	cities.push_back( newyork );
-	cities.push_back( aix );
-    //	cities.push_back( tokyo );
-    //	cities.push_back( london );
-    //	cities.push_back( shanghai );
-    //	cities.push_back( buenosaires );
-    //	cities.push_back( melbourne );
-    //	cities.push_back( detroit );
 	
+    cities.push_back( (City){ "new york", 40+47/60., -73 + 58/60.}  );
+    cities.push_back( (City) { "aix-en-provence", 43.529, 5.443 });
+    /*
+     cities.push_back( (City){ "tokyo", 35 + 40./60, 139 + 45/60. } );
+     cities.push_back( (City) { "london", 51 + 32/60., -5./60. });
+	 cities.push_back( (City) { "shanghai", 31 + 10/60., 121 + 28/60. });
+	 cities.push_back( (City) { "buenos aires", -34 + 35/60., -58 + 22/60. });
+	 cities.push_back( (City) { "melbourne" , -37 + 47/60., 144 + 58/60. });
+	 cities.push_back( (City) { "detroit", 42 + 19/60., -83 + 2 / 60. });
+	 cities.push_back( (City) { "aix-en-provence", 43.529, 5.443 });
+    */
     
 	mesh.setMode(OF_PRIMITIVE_LINES);
 	mesh.clear();
+    
 #ifdef __APPLE__
 	loadSegments( boundaries, "unix-boundaries-simple.txt" );
 #else
@@ -56,82 +52,66 @@ void testApp::setup(){
 #endif
 	addToMesh( boundaries, ofFloatColor(1.0) /* ofColor::black */);
     
+    setupGraticules();
     
     //GUI
     bShowHelp = true;
     
-    gui.setup(); // most of the time you don't need a name
-	//gui.add(camPos.setup("camera position", ofVec3f(0,0,500), ofVec3f(0,0,radius), ofVec3f(500,500,500)));
-    gui.add(camNearClip.setup("near plane", 0, 0, radius*3.));
-    gui.add(mouseInput.setup("mouse input", true));
-	gui.add(drawAxis.setup("draw axis", false));
+    drawAxis = false;
+    camIndex = 0;
     
-    drawAllAxes = false;
-    changeCamPosition = false;
+    cam.setPosition(0, 0, 1000);
     
 }
+
 
 //--------------------------------------------------------------
 void testApp::update(){
 	//ofSetWindowTitle(ofToString(ofGetFrameRate()));
-    
-    if (mouseInput){
-        cam.enableMouseInput();
-    } else {
-        cam.disableMouseInput();
-    }
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
 	ofBackground(0);
     
-	cam.begin();
+    ofPushMatrix();
     
-	if (drawAllAxes){
+    ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+    
+    if (camIndex == 0)
+        easyCam.begin();
+    else
+        cam.begin();
+        
+    
+	if (drawAxis){
         
 		ofDrawAxis(radius);
 		
-		float lat = cities[1].latitude;
-        float lon = cities[1].longitude;
-		ofQuaternion latRot, longRot, spinRot, spinRot2;
-        latRot.makeRotate(lat, -1, 0, 0);
-        longRot.makeRotate(lon, 0, 1, 0);
+		ofQuaternion latRot, longRot;
         
-        spinRot.makeRotate(90,1,0,0);
-        spinRot2.makeRotate(90,0,0,1);
+        // rotate along x and y axis and multiply by radius to place the point on the sphere
+        latRot.makeRotate(cities[1].latitude, -1, 0, 0);
+        longRot.makeRotate(cities[1].longitude, 0, 1, 0);
+        ofVec3f newOrigin = latRot * longRot * ofVec3f(0,0,radius);
         
-		float axisRadius = radius/4.;
-        
-		//our origin point is 0,0, on the surface of our sphere, this is where the meridian and equator meet
-		ofVec3f origin = ofVec3f(0,0,radius);
-		ofVec3f newOrigin = latRot * longRot * ofVec3f(0,0,radius);
-		
         ofNode node = ofNode();
         node.setPosition(newOrigin);
-        node.setOrientation(spinRot * spinRot2 * latRot * longRot);
+        node.setOrientation(latRot * longRot);
         node.draw();
         
-		if (changeCamPosition) {
-            
-			cam.setPosition(newOrigin);
-			cam.setOrientation(spinRot * spinRot2 * latRot * longRot );
-			changeCamPosition = false;
-		}
+//		if (camIndex == 1) {
+//            
+//			cam.setPosition(node.getPosition());
+//			cam.setOrientation(node.getOrientationQuat());
+//		}
 		
 	}
     
     
-    cam.setNearClip(camNearClip);
-    
 	//translate so that the center of the screen is 0,0
-	ofSetColor(255, 255, 255, 20);
-    //ofSetColor(ofColor::white);
-    
-	//draw a translucent wireframe sphere (ofNoFill() is on)
-	//add an extra spin at the rate of 1 degree per frame
-	//ofRotate(ofGetFrameNum(), 0, 1, 0);
-	ofDrawSphere(0, 0, 0, radius);
+    ofSetColor(64);
+    graticules.draw();
     
 	ofSetColor(255);
     //ofSetColor(ofColor::black);
@@ -161,26 +141,46 @@ void testApp::draw(){
     
     mesh.draw();
     
-	cam.end();
+    if (camIndex == 0)
+        easyCam.end();
+    else
+        cam.end();
     
-    // auto draw?
-	// should the gui control hiding?
-    gui.draw();
-	
-    
+    ofPopMatrix();
+
     drawHelp();
     
 }
 
 void testApp::drawHelp(){
+    stringstream helpStream;
+    
     ofSetColor(255);
-	string msg = string();
+    
 	if (bShowHelp) {
-        msg = string("\nShowing help (press 'h' to toggle): ")+ (bShowHelp ? "YES" : "NO");
-		msg += "\n\n1: test";
-	}
-	msg += "\nfps: " + ofToString(ofGetFrameRate(), 2);
-	ofDrawBitmapStringHighlight(msg, 10, 10);
+        helpStream << "Showing help (press 'h' to toggle): " << (bShowHelp ? "YES" : "NO") << endl << endl;
+		helpStream << "1: draw axes" << endl;
+        helpStream << "c: cycle cameras (current: ";
+        switch (camIndex) {
+            case 0:
+                helpStream << "ofEasyCam";
+                break;
+            
+            case 1:
+                helpStream << "freecam";
+                break;
+                
+            case 2:
+                helpStream << "city freecam";
+                break;
+                
+            default:
+                break;
+        };
+        helpStream << ")" << endl;
+        helpStream << "f: toggle full screen" << endl;
+    }
+	ofDrawBitmapStringHighlight(helpStream.str(), 10, 10);
     
 }
 
@@ -204,7 +204,7 @@ void testApp::loadSegments( vector< vector<ofPoint> > &segments, string _file){
                 
 				vector<string> values = ofSplitString(temp, " ");
                 
-				if ( values[0] == "segment"){
+                if ( values[0] == "segment" || values[0].find("segment", 0) != -1){
                     
 					if (lineCount != 0){
 						segments.push_back( newPoints );
@@ -239,7 +239,7 @@ void testApp::addToMesh( vector< vector<ofPoint> > & segments, ofFloatColor _col
         
 		for (int j = 0; j < segments[i].size(); j++){
             
-			ofQuaternion latRot, longRot;
+            ofQuaternion latRot, longRot;
 			latRot.makeRotate(segments[i][j].y, -1, 0, 0);
 			longRot.makeRotate(segments[i][j].x, 0, 1, 0);
             
@@ -258,33 +258,78 @@ void testApp::addToMesh( vector< vector<ofPoint> > & segments, ofFloatColor _col
 }
 
 //--------------------------------------------------------------
+void testApp::setupGraticules(){
+    
+    ofVec3f center = ofVec3f(0,0,300);
+    
+    graticules.setMode(OF_PRIMITIVE_LINES);
+    graticules.clear();
+    
+    ofQuaternion latRot, longRot;
+    
+    // meridians
+    for (int lon = 0; lon <=360; lon+=15) {
+        for (int lat = 90; lat <=90+360; lat+=1) {
+            
+			latRot.makeRotate(lat, -1, 0, 0);
+			longRot.makeRotate(lon, 0, 1, 0);
+            
+            graticules.addVertex(latRot * longRot * center);
+            
+            latRot.makeRotate(lat+1, -1, 0, 0);
+            graticules.addVertex(latRot * longRot * center);
+        }
+    }
+    
+    // parallels
+    for (int lat = 75; lat >=-75; lat-=15) {  // north to south
+        for (int lon = 0; lon <=360; lon+=1) {
+            
+			latRot.makeRotate(lat, -1, 0, 0);
+			longRot.makeRotate(lon, 0, 1, 0);
+            
+            graticules.addVertex(latRot * longRot * center);
+            
+            longRot.makeRotate(lon+1, 0, 1, 0);
+            graticules.addVertex(latRot * longRot * center);
+        }
+    }
+
+    /*
+    for (int lat = -75; lat <=75; lat+=15) {
+        for (int lon = -180; lon <=180; lon+=1) {
+            
+            ofQuaternion latRot, longRot;
+			latRot.makeRotate(lat, -1, 0, 0);
+			longRot.makeRotate(lon, 0, 1, 0);
+            
+			ofVec3f worldPoint = latRot * longRot * center;
+            
+            //graticules.addColor( color );
+            graticules.addVertex(worldPoint);
+        }
+    }
+     */
+
+    
+    
+}
+
+//--------------------------------------------------------------
 void testApp::keyPressed(int key){
 	if (key == 'f'){
 		ofToggleFullscreen();
 	}
-    if (key == ' '){
-        
-        //float lat = cities[0].latitude;
-        //float lon = cities[0].longitude;
-        ////cam.setOrientation(ofVec3f(30,0,0));
-        //ofQuaternion latRot, longRot;
-        //latRot.makeRotate(lat, -1, 0, 0);
-        //longRot.makeRotate(lon, 0, 1, 0);
-        //
-        //ofVec3f worldPoint = latRot * longRot * ofVec3f(0,0,301);
-        ////cam.setGlobalPosition(worldPoint);
-        //cam.setPosition(worldPoint);
-        //
-        //if (lon<0) lon = lon + 360;
-        //cam.setOrientation(ofVec3f(90.-lat,lon,-lon));
-        
-        
-    }
     if (key == '1'){
-        drawAllAxes = !drawAllAxes;
+        drawAxis = !drawAxis;
     }
-    if (key == '2'){
-        changeCamPosition = !changeCamPosition;
+    if (key == 'c'){
+        camIndex = (camIndex + 1) % 3;
+        
+        if (camIndex == 0)
+            easyCam.enableMouseInput();
+        else
+            easyCam.disableMouseInput();
     }
     if( key == 'h' ){
 		bShowHelp = !bShowHelp;
@@ -298,7 +343,15 @@ void testApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void testApp::mouseMoved(int x, int y ){
-    
+    if (camIndex>0) {
+        float rotateAmountX = ofMap(ofGetMouseX(), 0, ofGetWidth(), -180, 180);
+        float rotateAmountY = ofMap(ofGetMouseY(), 0, ofGetHeight(), -180, 180);
+        
+        // TODO try with get/set Orientation
+        cam.lookAt(ofVec3f(0));
+        cam.rotate(rotateAmountX/2, ofVec3f(0,-1,0));
+        cam.rotate(rotateAmountY/2, ofVec3f(-1,0,0));
+    }
 }
 
 //--------------------------------------------------------------

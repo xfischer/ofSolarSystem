@@ -35,24 +35,21 @@ private:
 	vector< vector<ofPoint> > boundaries;
     
 	ofMesh mesh;
+    ofVboMesh graticules;
     
-	ofEasyCam cam;
+	ofCamera cam;
+    ofEasyCam easyCam;
     
 	float radius;
     
-    bool drawAllAxes;
-    bool changeCamPosition;
+    bool drawAxis;
+    int camIndex;
     
     // GUI
     bool bShowHelp;
     
-	ofxVec3Slider camPos;
-    ofxFloatSlider camNearClip;
-    ofxToggle mouseInput;
-	ofxToggle drawAxis;
-    
-	ofxPanel gui;
-    
     void drawHelp();
+    
+    void setupGraticules();
     
 };
