@@ -37,23 +37,19 @@ private:
 	ofMesh mesh;
     ofVboMesh graticules;
     
-	ofEasyCam cam;
+	ofCamera cam;
+    ofEasyCam easyCam;
     
 	float radius;
     
-    bool drawAllAxes;
-    bool changeCamPosition;
+    bool drawAxis;
+    int camIndex;
     
     // GUI
     bool bShowHelp;
     
-	ofxVec3Slider camPos;
-    //ofxFloatSlider camNearClip;
-    
-	ofxPanel gui;
-    
     void drawHelp();
     
-    void createGraticules();
+    void setupGraticules();
     
 };
