@@ -2,12 +2,14 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
+#include "ofCelestialBody.h"
 
 typedef struct {
 	string name;
 	float latitude;
 	float longitude;
 } City;
+
 
 class testApp : public ofBaseApp{
     
@@ -31,19 +33,15 @@ private:
 	vector<City> cities;
     
 	void loadSegments( vector< vector<ofPoint> > &segments, string _file);
-	void addToMesh( vector< vector<ofPoint> > &segments , ofFloatColor _color );
 	vector< vector<ofPoint> > boundaries;
     
-	ofMesh mesh;
-    ofVboMesh graticules;
+    vector<ofCelestialBody> celestialBodies;
     
 	ofCamera cam;
     ofEasyCam easyCam;
     ofVec3f camTarget;
     
-	float radius;
-    
-    bool bDrawAxis;
+	bool bDrawAxis;
     bool bDrawGraticules;
     bool bDrawBoundaries;
     int camIndex;
@@ -54,7 +52,5 @@ private:
     bool bShowHelp;
     
     void drawHelp();
-    
-    void setupGraticules();
     
 };

@@ -18,8 +18,6 @@ void testApp::setup(){
 	//NoFill();
 	ofFill();
     
-	radius = 300;
-    
 	// create little objects for each city.
 	// A Lat/Lon like this:
 	// Lewiston, Idaho 	W 46 24' N 117 2'
@@ -42,17 +40,23 @@ void testApp::setup(){
 	 cities.push_back( (City) { "aix-en-provence", 43.529, 5.443 });
     */
     
-	mesh.setMode(OF_PRIMITIVE_LINES);
-	mesh.clear();
-    
 #ifdef __APPLE__
 	loadSegments( boundaries, "unix-boundaries-simple.txt" );
 #else
     loadSegments( boundaries, "boundaries-simple.txt" );
 #endif
-	addToMesh( boundaries, ofFloatColor(1.0) /* ofColor::black */);
     
-    setupGraticules();
+    celestialBodies.push_back( ofCelestialBody(	"Sun", 696342, 0 ));
+    celestialBodies.push_back( ofCelestialBody(	"Mercury", 2439.7, 57909175 ));
+    celestialBodies.push_back( ofCelestialBody(	"Venus", 6051.8, 108208930 ));
+    celestialBodies.push_back( ofCelestialBody(	"Earth", 6378.14, 149597890, boundaries));
+    celestialBodies.push_back( ofCelestialBody(	"Mars", 3397, 227936640 ));
+    celestialBodies.push_back( ofCelestialBody(	"Jupiter", 71492, 778412020 ));
+    
+    celestialBodies.push_back( ofCelestialBody(	"Saturn", 60268, 1426725400 ));
+    celestialBodies.push_back( ofCelestialBody(	"Uranus", 25559, 2870972200 ));
+    celestialBodies.push_back( ofCelestialBody(	"Neptune", 24764, 4498252900 ));
+    
     
     //GUI
     bShowHelp = true;
@@ -62,8 +66,11 @@ void testApp::setup(){
     bDrawBoundaries = true;
     camIndex = 0;
     
+    easyCam.setDistance(1000);
     cam.setPosition(0, 0, 1000);
     camTarget = ofVec3f(0);
+    cam.setFarClip(778412020+71492);
+    easyCam.setFarClip(778412020+71492);
     
 }
 
@@ -71,6 +78,10 @@ void testApp::setup(){
 //--------------------------------------------------------------
 void testApp::update(){
 	//ofSetWindowTitle(ofToString(ofGetFrameRate()));
+    for(int i = 0; i < celestialBodies.size(); i++){
+        celestialBodies[i].update();
+    }
+
 }
 
 //--------------------------------------------------------------
@@ -86,69 +97,41 @@ void testApp::draw(){
     else
         cam.begin();
         
+
+    for(int i = 0; i < celestialBodies.size(); i++){
+        celestialBodies[i].draw(bDrawAxis, bDrawGraticules, bDrawBoundaries);
+    }
+
     
 	if (bDrawAxis){
-        
-		ofDrawAxis(radius);
-		
-		ofQuaternion latRot, longRot;
-        
-        // rotate along x and y axis and multiply by radius to place the point on the sphere
-        latRot.makeRotate(cities[1].latitude, -1, 0, 0);
-        longRot.makeRotate(cities[1].longitude, 0, 1, 0);
-        ofVec3f newOrigin = latRot * longRot * ofVec3f(0,0,radius);
-        
-        ofNode node = ofNode();
-        node.setPosition(newOrigin);
-        node.setOrientation(latRot * longRot);
-        node.draw();
-        
         cam.draw();
-        
-//		if (camIndex == 1) {
-//            
-//			cam.setPosition(node.getPosition());
-//			cam.setOrientation(node.getOrientationQuat());
-//		}
-		
 	}
     
-    
-    if (bDrawGraticules){
-        
-        //translate so that the center of the screen is 0,0
-        ofSetColor(64);
-        graticules.draw();
-    }
-    
-	ofSetColor(255);
-    //ofSetColor(ofColor::black);
-	for(unsigned int i = 0; i < cities.size(); i++){
-        
-		//three rotations
-		//two to represent the latitude and lontitude of the city
-		//a third so that it spins along with the spinning sphere
-		ofQuaternion latRot, longRot, spinQuat;
-		latRot.makeRotate(cities[i].latitude, -1, 0, 0);
-		longRot.makeRotate(cities[i].longitude, 0, 1, 0);
-		//spinQuat.makeRotate(ofGetFrameNum(), 0, 1, 0);
-        
-		//our starting point is 0,0, on the surface of our sphere, this is where the meridian and equator meet
-		ofVec3f center = ofVec3f(0,0,radius);
-		//multiplying a quat with another quat combines their rotations into one quat
-		//multiplying a quat to a vector applies the quat's rotation to that vector
-		//so to to generate our point on the sphere, multiply all of our quaternions together then multiple the centery by the combined rotation
-		ofVec3f worldPoint = latRot * longRot /* * spinQuat*/ * center;
-        
-		//draw it and label it
-		ofLine(ofVec3f(0), worldPoint);
-        
-		//set the bitmap text mode billboard so the points show up correctly in 3d
-		ofDrawBitmapString(cities[i].name, worldPoint );
-	}
-    
-    if (bDrawBoundaries)
-        mesh.draw();
+//	ofSetColor(255);
+//    //ofSetColor(ofColor::black);
+//	for(unsigned int i = 0; i < cities.size(); i++){
+//        
+//		//three rotations
+//		//two to represent the latitude and lontitude of the city
+//		//a third so that it spins along with the spinning sphere
+//		ofQuaternion latRot, longRot, spinQuat;
+//		latRot.makeRotate(cities[i].latitude, -1, 0, 0);
+//		longRot.makeRotate(cities[i].longitude, 0, 1, 0);
+//		//spinQuat.makeRotate(ofGetFrameNum(), 0, 1, 0);
+//        
+//		//our starting point is 0,0, on the surface of our sphere, this is where the meridian and equator meet
+//		ofVec3f center = ofVec3f(0,0,radius);
+//		//multiplying a quat with another quat combines their rotations into one quat
+//		//multiplying a quat to a vector applies the quat's rotation to that vector
+//		//so to to generate our point on the sphere, multiply all of our quaternions together then multiple the centery by the combined rotation
+//		ofVec3f worldPoint = latRot * longRot /* * spinQuat*/ * center;
+//        
+//		//draw it and label it
+//		ofLine(ofVec3f(0), worldPoint);
+//        
+//		//set the bitmap text mode billboard so the points show up correctly in 3d
+//		ofDrawBitmapString(cities[i].name, worldPoint );
+//	}
     
     if (camIndex == 0)
         easyCam.end();
@@ -246,93 +229,10 @@ void testApp::loadSegments( vector< vector<ofPoint> > &segments, string _file){
     
 }
 
-void testApp::addToMesh( vector< vector<ofPoint> > & segments, ofFloatColor _color ){
-	ofVec3f center = ofVec3f(0,0,300);
-    
-	for(int i = 0; i < segments.size(); i++){
-        
-		ofVec3f lastPoint;
-        
-		for (int j = 0; j < segments[i].size(); j++){
-            
-            ofQuaternion latRot, longRot;
-			latRot.makeRotate(segments[i][j].y, -1, 0, 0);
-			longRot.makeRotate(segments[i][j].x, 0, 1, 0);
-            
-			ofVec3f worldPoint = latRot * longRot * center;
-            
-			if ( j > 0 ){
-				mesh.addColor( _color );
-				mesh.addVertex(lastPoint);
-				mesh.addColor( _color );
-				mesh.addVertex(worldPoint);
-			}
-            
-			lastPoint = worldPoint;
-		}
-	}
-}
-
-//--------------------------------------------------------------
-void testApp::setupGraticules(){
-    
-    ofVec3f center = ofVec3f(0,0,300);
-    
-    graticules.setMode(OF_PRIMITIVE_LINES);
-    graticules.clear();
-    
-    ofQuaternion latRot, longRot;
-    
-    // meridians
-    for (int lon = 0; lon <=360; lon+=15) {
-        for (int lat = 90; lat <=90+360; lat+=1) {
-            
-			latRot.makeRotate(lat, -1, 0, 0);
-			longRot.makeRotate(lon, 0, 1, 0);
-            
-            graticules.addVertex(latRot * longRot * center);
-            
-            latRot.makeRotate(lat+1, -1, 0, 0);
-            graticules.addVertex(latRot * longRot * center);
-        }
-    }
-    
-    // parallels
-    for (int lat = 75; lat >=-75; lat-=15) {  // north to south
-        for (int lon = 0; lon <=360; lon+=1) {
-            
-			latRot.makeRotate(lat, -1, 0, 0);
-			longRot.makeRotate(lon, 0, 1, 0);
-            
-            graticules.addVertex(latRot * longRot * center);
-            
-            longRot.makeRotate(lon+1, 0, 1, 0);
-            graticules.addVertex(latRot * longRot * center);
-        }
-    }
-
-    /*
-    for (int lat = -75; lat <=75; lat+=15) {
-        for (int lon = -180; lon <=180; lon+=1) {
-            
-            ofQuaternion latRot, longRot;
-			latRot.makeRotate(lat, -1, 0, 0);
-			longRot.makeRotate(lon, 0, 1, 0);
-            
-			ofVec3f worldPoint = latRot * longRot * center;
-            
-            //graticules.addColor( color );
-            graticules.addVertex(worldPoint);
-        }
-    }
-     */
-
-    
-    
-}
-
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
+    
+    float moveAmount = 5000;
 
     if (key == OF_KEY_SHIFT){
         easyCam.disableMouseInput();
@@ -343,19 +243,19 @@ void testApp::keyPressed(int key){
     
     if (key == OF_KEY_UP){
         if (bShiftDown)
-            cam.boom(10);
+            cam.boom(moveAmount);
         else if (bCtrlDown)
             cam.tilt(1);
         else
-            cam.dolly(-10);
+            cam.dolly(-moveAmount);
     }
     if (key == OF_KEY_DOWN){
         if (bShiftDown)
-            cam.boom(-10);
+            cam.boom(-moveAmount);
         else if (bCtrlDown)
             cam.tilt(-1);
         else
-            cam.dolly(10);
+            cam.dolly(moveAmount);
     }
     if (key == OF_KEY_LEFT){
         if (bShiftDown && bCtrlDown)
@@ -363,7 +263,7 @@ void testApp::keyPressed(int key){
         else if (bCtrlDown)
             cam.pan(1);
         else
-            cam.truck(-10);
+            cam.truck(-moveAmount);
     }
     if (key == OF_KEY_RIGHT){
         if (bShiftDown && bCtrlDown)
@@ -371,7 +271,7 @@ void testApp::keyPressed(int key){
         else if (bCtrlDown)
             cam.pan(-1);
         else
-            cam.truck(10);
+            cam.truck(moveAmount);
     }
     if (key =='f')
         ofToggleFullscreen();
@@ -394,6 +294,10 @@ void testApp::keyPressed(int key){
         cam.resetTransform();
     if (key == 'h')
         bShowHelp = !bShowHelp;
+    
+    if (key == ' '){
+        cam.dolly(5000);
+    }
 
 }
 

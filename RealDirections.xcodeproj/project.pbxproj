@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		254131D618148443001DC663 /* ofCelestialBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 254131D418148443001DC663 /* ofCelestialBody.cpp */; };
 		25842D8918074B170044A4CB /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 25842D7818074B170044A4CB /* ofxBaseGui.cpp */; };
 		25842D8A18074B170044A4CB /* ofxButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 25842D7A18074B170044A4CB /* ofxButton.cpp */; };
 		25842D8B18074B170044A4CB /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 25842D7D18074B170044A4CB /* ofxGuiGroup.cpp */; };
@@ -68,6 +69,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		254131D418148443001DC663 /* ofCelestialBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofCelestialBody.cpp; sourceTree = "<group>"; };
+		254131D518148443001DC663 /* ofCelestialBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofCelestialBody.h; sourceTree = "<group>"; };
 		25842D7818074B170044A4CB /* ofxBaseGui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxBaseGui.cpp; path = ../../../addons/ofxGui/src/ofxBaseGui.cpp; sourceTree = "<group>"; };
 		25842D7918074B170044A4CB /* ofxBaseGui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxBaseGui.h; path = ../../../addons/ofxGui/src/ofxBaseGui.h; sourceTree = "<group>"; };
 		25842D7A18074B170044A4CB /* ofxButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxButton.cpp; path = ../../../addons/ofxGui/src/ofxButton.cpp; sourceTree = "<group>"; };
@@ -245,6 +248,8 @@
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
+				254131D418148443001DC663 /* ofCelestialBody.cpp */,
+				254131D518148443001DC663 /* ofCelestialBody.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -355,6 +360,7 @@
 				25842D8E18074B170044A4CB /* ofxSlider.cpp in Sources */,
 				25842D8F18074B170044A4CB /* ofxSliderGroup.cpp in Sources */,
 				25842D9018074B170044A4CB /* ofxToggle.cpp in Sources */,
+				254131D618148443001DC663 /* ofCelestialBody.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
