@@ -57,10 +57,13 @@ void testApp::setup(){
     //GUI
     bShowHelp = true;
     
-    drawAxis = false;
+    bDrawAxis = false;
+    bDrawGraticules = true;
+    bDrawBoundaries = true;
     camIndex = 0;
     
     cam.setPosition(0, 0, 1000);
+    camTarget = ofVec3f(0);
     
 }
 
@@ -84,7 +87,7 @@ void testApp::draw(){
         cam.begin();
         
     
-	if (drawAxis){
+	if (bDrawAxis){
         
 		ofDrawAxis(radius);
 		
@@ -100,6 +103,8 @@ void testApp::draw(){
         node.setOrientation(latRot * longRot);
         node.draw();
         
+        cam.draw();
+        
 //		if (camIndex == 1) {
 //            
 //			cam.setPosition(node.getPosition());
@@ -109,9 +114,12 @@ void testApp::draw(){
 	}
     
     
-	//translate so that the center of the screen is 0,0
-    ofSetColor(64);
-    graticules.draw();
+    if (bDrawGraticules){
+        
+        //translate so that the center of the screen is 0,0
+        ofSetColor(64);
+        graticules.draw();
+    }
     
 	ofSetColor(255);
     //ofSetColor(ofColor::black);
@@ -139,7 +147,8 @@ void testApp::draw(){
 		ofDrawBitmapString(cities[i].name, worldPoint );
 	}
     
-    mesh.draw();
+    if (bDrawBoundaries)
+        mesh.draw();
     
     if (camIndex == 0)
         easyCam.end();
@@ -159,7 +168,9 @@ void testApp::drawHelp(){
     
 	if (bShowHelp) {
         helpStream << "Showing help (press 'h' to toggle): " << (bShowHelp ? "YES" : "NO") << endl << endl;
-		helpStream << "1: draw axes" << endl;
+		helpStream << "1: draw axes :" << (bDrawAxis ? "YES" : "NO") << endl;
+		helpStream << "2: draw graticules :" << (bDrawGraticules ? "YES" : "NO") << endl;
+		helpStream << "3: draw boundaries :" << (bDrawBoundaries ? "YES" : "NO") << endl;
         helpStream << "c: cycle cameras (current: ";
         switch (camIndex) {
             case 0:
@@ -178,6 +189,11 @@ void testApp::drawHelp(){
                 break;
         };
         helpStream << ")" << endl;
+        helpStream << "move cameras with:" << endl
+                    << "  - left/right (x axis)" << endl
+                    << "  - up/down (y axis, +shift: z axis)" << endl
+                    << "  - ctrl key for rotation" << endl;
+        helpStream << "r: reset cam" << endl;
         helpStream << "f: toggle full screen" << endl;
     }
 	ofDrawBitmapStringHighlight(helpStream.str(), 10, 10);
@@ -317,41 +333,91 @@ void testApp::setupGraticules(){
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
-	if (key == 'f'){
-		ofToggleFullscreen();
-	}
-    if (key == '1'){
-        drawAxis = !drawAxis;
+
+    if (key == OF_KEY_SHIFT){
+        easyCam.disableMouseInput();
+        bShiftDown = true;
     }
-    if (key == 'c'){
-        camIndex = (camIndex + 1) % 3;
+    if (key == OF_KEY_CONTROL)
+        bCtrlDown = true;
+    
+    if (key == OF_KEY_UP){
+        if (bShiftDown)
+            cam.boom(10);
+        else if (bCtrlDown)
+            cam.tilt(1);
+        else
+            cam.dolly(-10);
+    }
+    if (key == OF_KEY_DOWN){
+        if (bShiftDown)
+            cam.boom(-10);
+        else if (bCtrlDown)
+            cam.tilt(-1);
+        else
+            cam.dolly(10);
+    }
+    if (key == OF_KEY_LEFT){
+        if (bShiftDown && bCtrlDown)
+            cam.roll(1);
+        else if (bCtrlDown)
+            cam.pan(1);
+        else
+            cam.truck(-10);
+    }
+    if (key == OF_KEY_RIGHT){
+        if (bShiftDown && bCtrlDown)
+            cam.roll(-1);
+        else if (bCtrlDown)
+            cam.pan(-1);
+        else
+            cam.truck(10);
+    }
+    if (key =='f')
+        ofToggleFullscreen();
+    if (key == '1')
+        bDrawAxis = !bDrawAxis;
+    if (key == '2')
+        bDrawGraticules = !bDrawGraticules;
+    if (key == '3')
+        bDrawBoundaries = !bDrawBoundaries;
+    if (key =='c'){
         
+        camIndex = (camIndex + 1) % 3;
+            
         if (camIndex == 0)
             easyCam.enableMouseInput();
         else
             easyCam.disableMouseInput();
     }
-    if( key == 'h' ){
-		bShowHelp = !bShowHelp;
-	}
+    if (key == 'r')
+        cam.resetTransform();
+    if (key == 'h')
+        bShowHelp = !bShowHelp;
+
 }
 
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
-    
+    if (key == OF_KEY_SHIFT){
+        bShiftDown = false;
+        easyCam.enableMouseInput();
+    }
+    if (key == OF_KEY_CONTROL)
+        bCtrlDown = false;
 }
 
 //--------------------------------------------------------------
 void testApp::mouseMoved(int x, int y ){
-    if (camIndex>0) {
-        float rotateAmountX = ofMap(ofGetMouseX(), 0, ofGetWidth(), -180, 180);
-        float rotateAmountY = ofMap(ofGetMouseY(), 0, ofGetHeight(), -180, 180);
-        
-        // TODO try with get/set Orientation
-        cam.lookAt(ofVec3f(0));
-        cam.rotate(rotateAmountX/2, ofVec3f(0,-1,0));
-        cam.rotate(rotateAmountY/2, ofVec3f(-1,0,0));
-    }
+
+//    if ((camIndex == 0 && bShiftDown) || camIndex==1){
+//    float amount = 2;
+//    float rotateAmountX = ofMap(ofGetMouseX(), 0, ofGetWidth(), -amount, amount);
+//    float rotateAmountY = ofMap(ofGetMouseY(), 0, ofGetHeight(), -amount, amount);
+//    
+//    cam.pan(-rotateAmountX);
+//    cam.tilt(-rotateAmountY);
+//    }
 }
 
 //--------------------------------------------------------------

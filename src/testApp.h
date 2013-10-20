@@ -39,11 +39,16 @@ private:
     
 	ofCamera cam;
     ofEasyCam easyCam;
+    ofVec3f camTarget;
     
 	float radius;
     
-    bool drawAxis;
+    bool bDrawAxis;
+    bool bDrawGraticules;
+    bool bDrawBoundaries;
     int camIndex;
+    bool bShiftDown;
+    bool bCtrlDown;
     
     // GUI
     bool bShowHelp;
