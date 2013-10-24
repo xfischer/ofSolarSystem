@@ -12,7 +12,7 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistan
     
     name = _name;
     radius = _radius/100.;
-    distance = _sunDistance/500000.;
+    distance = _sunDistance/50000.;
     
     setup();
 }
@@ -21,7 +21,7 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistan
 
     name = _name;
     radius = _radius/100.;
-    distance = _sunDistance/500000.;
+    distance = _sunDistance/50000.;
     
     setup();
     
@@ -35,8 +35,6 @@ void ofCelestialBody::addToMesh(vector<vector<ofPoint> > &boundaries, ofFloatCol
 	mesh.clear();
     
     ofVec3f center = ofVec3f(0,0,radius);
-    ofMatrix4x4 trans;
-    trans.makeTranslationMatrix(ofVec3f(0,0,distance));
     
 	for(int i = 0; i < boundaries.size(); i++){
         
@@ -48,7 +46,7 @@ void ofCelestialBody::addToMesh(vector<vector<ofPoint> > &boundaries, ofFloatCol
 			latRot.makeRotate(boundaries[i][j].y, -1, 0, 0);
 			longRot.makeRotate(boundaries[i][j].x, 0, 1, 0);
             
-			ofVec3f worldPoint = latRot * longRot * center * trans;
+			ofVec3f worldPoint = latRot * longRot * center;
             
 			if ( j > 0 ){
 				mesh.addColor( _color );
@@ -72,8 +70,6 @@ void ofCelestialBody::setup(){
     graticules.clear();
     
     ofQuaternion latRot, longRot;
-    ofMatrix4x4 trans;
-    trans.makeTranslationMatrix(ofVec3f(0,0,distance));
     
     // meridians
     for (int lon = 0; lon <=360; lon+=15) {
@@ -82,10 +78,10 @@ void ofCelestialBody::setup(){
             latRot.makeRotate(lat, -1, 0, 0);
             longRot.makeRotate(lon, 0, 1, 0);
             
-            graticules.addVertex(latRot * longRot * center * trans);
+            graticules.addVertex(latRot * longRot * center);
             
             latRot.makeRotate(lat+1, -1, 0, 0);
-            graticules.addVertex(latRot * longRot * center * trans);
+            graticules.addVertex(latRot * longRot * center);
         }
     }
     
@@ -96,10 +92,10 @@ void ofCelestialBody::setup(){
             latRot.makeRotate(lat, -1, 0, 0);
             longRot.makeRotate(lon, 0, 1, 0);
             
-            graticules.addVertex(latRot * longRot * center * trans);
+            graticules.addVertex(latRot * longRot * center);
             
             longRot.makeRotate(lon+1, 0, 1, 0);
-            graticules.addVertex(latRot * longRot * center * trans);
+            graticules.addVertex(latRot * longRot * center);
         }
     }
     
@@ -111,13 +107,16 @@ void ofCelestialBody::update(){
 
 void ofCelestialBody::draw(bool bDrawAxis, bool bDrawGraticules, bool bDrawBoundaries){
     
+    ofPushMatrix();
+    
+    ofTranslate(0,0,distance);
+    
 	if (bDrawAxis){
 		ofDrawAxis(radius);
 	}
     
     if (bDrawGraticules){
         
-        //translate so that the center of the screen is 0,0
         ofSetColor(64);
         graticules.draw();
     }
@@ -126,11 +125,12 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawGraticules, bool bDrawBound
         mesh.draw();
     
     ofSetColor(255);
-    ofMatrix4x4 trans;
-    trans.makeTranslationMatrix(ofVec3f(0,radius*1.1,distance));
-    ofVec3f pos =ofVec3f(0,0,0) * trans;
     
-    ofDrawBitmapString(name, pos);
-    //ofDrawBitmapStringHighlight(name, pos);
+    ofTranslate(0,radius*1.1,0);
+    
+    //ofDrawBitmapString(name, 0, 0);
+    ofDrawBitmapStringHighlight(name, 0, 0);
 
+    ofPopMatrix();
+    
 }
