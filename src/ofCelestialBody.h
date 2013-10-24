@@ -23,12 +23,14 @@ public: // place public functions or variables declarations here
     ofVec3f position;
     double radius;
     double distance; // distance from Sun
+    double inclination; // orbit to equator inclination
+    double rotationPeriod; // rotation period in Earth days
     string name;
     
     
     
-    ofCelestialBody(string name, double radius, double sunDistance);
-    ofCelestialBody(string name, double radius, double sunDistance, vector< vector<ofPoint> > &boundaries);
+    ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod);
+    ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, vector< vector<ofPoint> > &boundaries);
     
 private: // place private functions or variables declarations here
     ofMesh mesh;

@@ -7,21 +7,28 @@
 //
 
 #include "ofCelestialBody.h"
+#define RADIUSFACTOR 100.
+#define DISTFACTOR 50000.
 
-ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance){
+ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, double _inclination, double _rotationPeriod){
     
     name = _name;
-    radius = _radius/100.;
-    distance = _sunDistance/50000.;
+    radius = _radius/RADIUSFACTOR;
+    distance = _sunDistance/DISTFACTOR;
+    inclination = _inclination;
+    rotationPeriod = _rotationPeriod;
+    
     
     setup();
 }
 
-ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, vector< vector<ofPoint> > &boundaries){
+ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, double _inclination, double _rotationPeriod, vector< vector<ofPoint> > &boundaries){
 
     name = _name;
-    radius = _radius/100.;
-    distance = _sunDistance/50000.;
+    radius = _radius/RADIUSFACTOR;
+    distance = _sunDistance/DISTFACTOR;
+    inclination = _inclination;
+    rotationPeriod = _rotationPeriod;
     
     setup();
     
@@ -78,7 +85,7 @@ void ofCelestialBody::setup(){
             latRot.makeRotate(lat, -1, 0, 0);
             longRot.makeRotate(lon, 0, 1, 0);
             
-            graticules.addVertex(latRot * longRot * center);
+            graticules.addVertex(latRot * longRot * center);        
             
             latRot.makeRotate(lat+1, -1, 0, 0);
             graticules.addVertex(latRot * longRot * center);
@@ -109,7 +116,9 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawGraticules, bool bDrawBound
     
     ofPushMatrix();
     
-    ofTranslate(0,0,distance);
+    ofRotate(inclination, 0, 0, 1);
+    
+    //ofTranslate(0,0,distance);
     
 	if (bDrawAxis){
 		ofDrawAxis(radius);
@@ -128,9 +137,9 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawGraticules, bool bDrawBound
     
     ofTranslate(0,radius*1.1,0);
     
-    //ofDrawBitmapString(name, 0, 0);
-    ofDrawBitmapStringHighlight(name, 0, 0);
+    ofDrawBitmapString(name, 0, 0);
 
     ofPopMatrix();
+    
     
 }

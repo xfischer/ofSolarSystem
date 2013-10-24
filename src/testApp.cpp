@@ -7,6 +7,7 @@
  */
 
 #include "testApp.h"
+#define SIDEBYSIDE_SEPARATION 50
 
 //--------------------------------------------------------------
 void testApp::setup(){
@@ -46,17 +47,16 @@ void testApp::setup(){
     loadSegments( boundaries, "boundaries-simple.txt" );
 #endif
     
-    celestialBodies.push_back( ofCelestialBody(	"Sun", 696342, 0 ));
-    celestialBodies.push_back( ofCelestialBody(	"Mercury", 2439.7, 57909175 ));
-    celestialBodies.push_back( ofCelestialBody(	"Venus", 6051.8, 108208930 ));
-    celestialBodies.push_back( ofCelestialBody(	"Earth", 6378.14, 149597890, boundaries));
-    celestialBodies.push_back( ofCelestialBody(	"Mars", 3397, 227936640 ));
-    celestialBodies.push_back( ofCelestialBody(	"Jupiter", 71492, 778412020 ));
+    celestialBodies.push_back( ofCelestialBody(	"Sun", 696342, 0, 7.25, 25.38 ));
     
-    celestialBodies.push_back( ofCelestialBody(	"Saturn", 60268, 1426725400 ));
-    celestialBodies.push_back( ofCelestialBody(	"Uranus", 25559, 2870972200 ));
-    celestialBodies.push_back( ofCelestialBody(	"Neptune", 24764, 4498252900 ));
-    
+    celestialBodies.push_back( ofCelestialBody("Mercury", 2439.7, 57909227, 0,  58.646 ));
+    celestialBodies.push_back( ofCelestialBody("Venus", 6051.8, 108209475, -2.7 ,  -243.018 ));
+    celestialBodies.push_back( ofCelestialBody("Earth", 6371.00, 149598262, 23.4393,  0.99726968, boundaries ));
+    celestialBodies.push_back( ofCelestialBody("Mars", 3389.5, 227943824, 25.2,  1.026 ));
+    celestialBodies.push_back( ofCelestialBody("Jupiter", 69911, 778340821, 3.1,  0.41354 ));
+    celestialBodies.push_back( ofCelestialBody("Saturn", 58232, 1426666422, 26.7,  0.444 ));
+    celestialBodies.push_back( ofCelestialBody("Uranus", 25362, 2870658186, -97.8 ,  -0.718 ));
+    celestialBodies.push_back( ofCelestialBody("Neptune", 24622, 4498396441, 28.3,  0.671 ));
     
     //GUI
     bShowHelp = true;
@@ -96,42 +96,41 @@ void testApp::draw(){
         easyCam.begin();
     else
         cam.begin();
-        
+    
+    
+    // Draw bodies side by side
+    bool bSideBySide = true;
 
-    for(int i = 0; i < celestialBodies.size(); i++){
-        celestialBodies[i].draw(bDrawAxis, bDrawGraticules, bDrawBoundaries);
+    if (bSideBySide){
+        double currentDistance = 0;
+        
+        for(int i = 0; i < celestialBodies.size(); i++){
+            
+            if (currentDistance > 0)
+                currentDistance += celestialBodies[i].radius + SIDEBYSIDE_SEPARATION;
+            
+            ofPushMatrix();
+            
+            ofTranslate(0, 0, currentDistance);
+            celestialBodies[i].draw(bDrawAxis, bDrawGraticules, bDrawBoundaries);
+            
+            ofPopMatrix();
+            
+            currentDistance += celestialBodies[i].radius + SIDEBYSIDE_SEPARATION;
+        
+        }
+        
+    } else {
+        
+        for(int i = 0; i < celestialBodies.size(); i++){
+            celestialBodies[i].draw(bDrawAxis, bDrawGraticules, bDrawBoundaries);
+        }
     }
 
     
 	if (bDrawAxis){
         cam.draw();
 	}
-    
-//	ofSetColor(255);
-//    //ofSetColor(ofColor::black);
-//	for(unsigned int i = 0; i < cities.size(); i++){
-//        
-//		//three rotations
-//		//two to represent the latitude and lontitude of the city
-//		//a third so that it spins along with the spinning sphere
-//		ofQuaternion latRot, longRot, spinQuat;
-//		latRot.makeRotate(cities[i].latitude, -1, 0, 0);
-//		longRot.makeRotate(cities[i].longitude, 0, 1, 0);
-//		//spinQuat.makeRotate(ofGetFrameNum(), 0, 1, 0);
-//        
-//		//our starting point is 0,0, on the surface of our sphere, this is where the meridian and equator meet
-//		ofVec3f center = ofVec3f(0,0,radius);
-//		//multiplying a quat with another quat combines their rotations into one quat
-//		//multiplying a quat to a vector applies the quat's rotation to that vector
-//		//so to to generate our point on the sphere, multiply all of our quaternions together then multiple the centery by the combined rotation
-//		ofVec3f worldPoint = latRot * longRot /* * spinQuat*/ * center;
-//        
-//		//draw it and label it
-//		ofLine(ofVec3f(0), worldPoint);
-//        
-//		//set the bitmap text mode billboard so the points show up correctly in 3d
-//		ofDrawBitmapString(cities[i].name, worldPoint );
-//	}
     
     if (camIndex == 0)
         easyCam.end();
@@ -232,7 +231,7 @@ void testApp::loadSegments( vector< vector<ofPoint> > &segments, string _file){
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
     
-    float moveAmount = 5000;
+    float moveAmount = 50;
 
     if (key == OF_KEY_SHIFT){
         easyCam.disableMouseInput();
