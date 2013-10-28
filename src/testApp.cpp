@@ -47,7 +47,7 @@ void testApp::setup(){
     loadSegments( boundaries, "boundaries-simple.txt" );
 #endif
     
-    celestialBodies.push_back( ofCelestialBody(	"Sun", 696342, 0, 7.25, 25.38 ));
+    celestialBodies.push_back( ofCelestialBody(	"Sun", 696342, 0, 0 /* 7.25 */, 25.38 ));
     
     celestialBodies.push_back( ofCelestialBody("Mercury", 2439.7, 57909227, 0,  58.646 ));
     celestialBodies.push_back( ofCelestialBody("Venus", 6051.8, 108209475, -2.7 ,  -243.018 ));
@@ -68,9 +68,15 @@ void testApp::setup(){
     
     easyCam.setDistance(1000);
     cam.setPosition(0, 0, 1000);
-    camTarget = ofVec3f(0);
     cam.setFarClip(778412020+71492);
     easyCam.setFarClip(778412020+71492);
+    
+    easyCam.lookAt(ofVec3f(0,0,-1));
+    cam.lookAt(ofVec3f(0,0,778412020+71492));
+    
+    //this slows down the rotate a little bit
+	dampen = .4;
+
     
 }
 
@@ -91,11 +97,21 @@ void testApp::draw(){
     ofPushMatrix();
     
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+
+    switch (camIndex) {
+        case 0:     easyCam.begin(); break;
+        default:    cam.begin(); break;
+    }
     
-    if (camIndex == 0)
-        easyCam.begin();
-    else
-        cam.begin();
+    //Extract the rotation from the current rotation
+    ofVec3f axis;
+    float angle;
+    curRot.getRotate(angle, axis);
+    
+    //cam.rotate(angle, axis.x, axis.y, axis.z);
+    
+    easyCam.lookAt(cam);
+
     
     
     // Draw bodies side by side
@@ -132,10 +148,10 @@ void testApp::draw(){
         cam.draw();
 	}
     
-    if (camIndex == 0)
-        easyCam.end();
-    else
-        cam.end();
+    switch (camIndex) {
+        case 0: easyCam.end(); break;
+        default: cam.end(); break;
+    }
     
     ofPopMatrix();
 
@@ -163,18 +179,11 @@ void testApp::drawHelp(){
                 helpStream << "freecam";
                 break;
                 
-            case 2:
-                helpStream << "city freecam";
-                break;
-                
-            default:
-                break;
         };
         helpStream << ")" << endl;
         helpStream << "move cameras with:" << endl
                     << "  - left/right (x axis)" << endl
-                    << "  - up/down (y axis, +shift: z axis)" << endl
-                    << "  - ctrl key for rotation" << endl;
+                    << "  - up/down (y axis, +shift: z axis)" << endl;
         helpStream << "r: reset cam" << endl;
         helpStream << "f: toggle full screen" << endl;
     }
@@ -237,40 +246,34 @@ void testApp::keyPressed(int key){
         easyCam.disableMouseInput();
         bShiftDown = true;
     }
-    if (key == OF_KEY_CONTROL)
-        bCtrlDown = true;
-    
+
     if (key == OF_KEY_UP){
-        if (bShiftDown)
+        if (bShiftDown){
             cam.boom(moveAmount);
-        else if (bCtrlDown)
-            cam.tilt(1);
-        else
+            //easyCam.boom(moveAmount);
+        }
+        else{
             cam.dolly(-moveAmount);
+            //easyCam.dolly(-moveAmount);
+        }
     }
     if (key == OF_KEY_DOWN){
-        if (bShiftDown)
+        if (bShiftDown){
             cam.boom(-moveAmount);
-        else if (bCtrlDown)
-            cam.tilt(-1);
-        else
+            //easyCam.boom(-moveAmount);
+        }
+        else{
             cam.dolly(moveAmount);
+            //easyCam.dolly(moveAmount);
+        }
     }
     if (key == OF_KEY_LEFT){
-        if (bShiftDown && bCtrlDown)
-            cam.roll(1);
-        else if (bCtrlDown)
-            cam.pan(1);
-        else
-            cam.truck(-moveAmount);
+        cam.truck(-moveAmount);
+        //easyCam.truck(-moveAmount);
     }
     if (key == OF_KEY_RIGHT){
-        if (bShiftDown && bCtrlDown)
-            cam.roll(-1);
-        else if (bCtrlDown)
-            cam.pan(-1);
-        else
-            cam.truck(moveAmount);
+        cam.truck(moveAmount);
+        //easyCam.truck(moveAmount);
     }
     if (key =='f')
         ofToggleFullscreen();
@@ -282,7 +285,7 @@ void testApp::keyPressed(int key){
         bDrawBoundaries = !bDrawBoundaries;
     if (key =='c'){
         
-        camIndex = (camIndex + 1) % 3;
+        camIndex = (camIndex + 1) % 2;
             
         if (camIndex == 0)
             easyCam.enableMouseInput();
@@ -306,31 +309,33 @@ void testApp::keyReleased(int key){
         bShiftDown = false;
         easyCam.enableMouseInput();
     }
-    if (key == OF_KEY_CONTROL)
-        bCtrlDown = false;
 }
 
 //--------------------------------------------------------------
 void testApp::mouseMoved(int x, int y ){
-
-//    if ((camIndex == 0 && bShiftDown) || camIndex==1){
-//    float amount = 2;
-//    float rotateAmountX = ofMap(ofGetMouseX(), 0, ofGetWidth(), -amount, amount);
-//    float rotateAmountY = ofMap(ofGetMouseY(), 0, ofGetHeight(), -amount, amount);
-//    
-//    cam.pan(-rotateAmountX);
-//    cam.tilt(-rotateAmountY);
-//    }
 }
 
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button){
+    //every time the mouse is dragged, track the change
+	//accumulate the changes inside of curRot through multiplication
+    //cam.tilt((lastMouse.y-y)*dampen);
+    //cam.pan((lastMouse.x-x)*dampen);
     
+    if (camIndex == 1) {
+    ofVec2f mouse(x,y);
+    ofQuaternion yRot((lastMouse.y-y)*dampen, cam.getXAxis());
+    ofQuaternion xRot((lastMouse.x-x)*dampen, cam.getYAxis());
+    curRot = yRot*xRot;
+    cam.rotate(curRot);
+        lastMouse = mouse;}
 }
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-    
+    //store the last mouse point when it's first pressed to prevent popping
+	lastMouse = ofVec2f(x,y);
+
 }
 
 //--------------------------------------------------------------

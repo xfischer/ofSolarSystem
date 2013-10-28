@@ -39,18 +39,30 @@ private:
     
 	ofCamera cam;
     ofEasyCam easyCam;
-    ofVec3f camTarget;
     
 	bool bDrawAxis;
     bool bDrawGraticules;
     bool bDrawBoundaries;
     int camIndex;
     bool bShiftDown;
-    bool bCtrlDown;
     
     // GUI
     bool bShowHelp;
     
     void drawHelp();
+    
+    
+    // --------------------------------------------------
+    // Code from quaternionArcBall example
+
+    //current state of the rotation
+    ofQuaternion curRot;
+	
+    //a place to store the mouse position so we can measure incremental change
+    ofVec2f lastMouse;
+	
+	//slows down the rotation 1 = 1 degree per pixel
+	float dampen;
+
     
 };
