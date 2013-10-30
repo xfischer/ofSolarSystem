@@ -65,4 +65,8 @@ private:
 	float dampen;
 
     
+    // texture
+    ofImage texture;
+	GLUquadricObj *quadric;
+    
 };

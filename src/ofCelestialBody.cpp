@@ -69,6 +69,8 @@ void ofCelestialBody::addToMesh(vector<vector<ofPoint> > &boundaries, ofFloatCol
 
 void ofCelestialBody::setup(){
     
+    
+        
     //setupGraticules
     
     ofVec3f center = ofVec3f(0,0,radius);
@@ -106,6 +108,8 @@ void ofCelestialBody::setup(){
         }
     }
     
+   
+    
 }
 
 void ofCelestialBody::update(){
@@ -120,16 +124,18 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawGraticules, bool bDrawBound
 
     ofRotate(ofGetElapsedTimeMillis()*rotationPeriod*0.0002, 0, 1, 0);
 
-    //ofTranslate(0,0,distance);
-    
 	if (bDrawAxis){
 		ofDrawAxis(radius);
 	}
     
     if (bDrawGraticules){
         
-        ofSetColor(64);
-        graticules.draw();
+        //ofSetSphereResolution(25);
+        ofNoFill();
+        ofSetColor(255);
+        ofDrawSphere(radius);
+        ofFill();
+        //graticules.draw();
     }
 
     if (mesh.getNumVertices()>0 && bDrawBoundaries)
@@ -142,6 +148,8 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawGraticules, bool bDrawBound
     ofDrawBitmapString(name, 0, 0);
 
     ofPopMatrix();
+    
+    
     
     
 }

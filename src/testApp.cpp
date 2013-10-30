@@ -15,7 +15,7 @@ void testApp::setup(){
 	ofSetFrameRate(60);
 	//ofEnableAlphaBlending();
     ofEnableDepthTest();
-    ofSetSphereResolution(200);
+    ofSetSphereResolution(25);
 	//NoFill();
 	ofFill();
     
@@ -76,14 +76,25 @@ void testApp::setup(){
     
     //this slows down the rotate a little bit
 	dampen = .4;
-
+    
+    glEnable(GL_DEPTH_TEST); //enable depth comparisons and update the depth buffer
+	ofDisableArbTex(); //needed for textures to work with gluSphere
+	
+	
+    //prepare quadric for sphere
+	quadric = gluNewQuadric();
+	gluQuadricTexture(quadric, GL_TRUE);
+	gluQuadricNormals(quadric, GLU_SMOOTH);
+    
+    
+    texture.loadImage("earth.jpg");
     
 }
 
 
 //--------------------------------------------------------------
 void testApp::update(){
-	//ofSetWindowTitle(ofToString(ofGetFrameRate()));
+	ofSetWindowTitle(ofToString(ofGetFrameRate()));
     for(int i = 0; i < celestialBodies.size(); i++){
         celestialBodies[i].update();
     }
@@ -128,19 +139,25 @@ void testApp::draw(){
             ofPushMatrix();
             
             ofTranslate(0, 0, currentDistance);
+            
             celestialBodies[i].draw(bDrawAxis, bDrawGraticules, bDrawBoundaries);
             
             ofPopMatrix();
             
             currentDistance += celestialBodies[i].radius + SIDEBYSIDE_SEPARATION;
         
+            ofFill();
+  
         }
-        
+        texture.getTextureReference().bind();
+        gluSphere(quadric, 60, 100, 100);
+        texture.getTextureReference().unbind();
     } else {
         
         for(int i = 0; i < celestialBodies.size(); i++){
             celestialBodies[i].draw(bDrawAxis, bDrawGraticules, bDrawBoundaries);
         }
+        
     }
 
     
@@ -183,7 +200,8 @@ void testApp::drawHelp(){
         helpStream << ")" << endl;
         helpStream << "move cameras with:" << endl
                     << "  - left/right (x axis)" << endl
-                    << "  - up/down (y axis, +shift: z axis)" << endl;
+                    << "  - up/down (y axis, +shift: z axis)" << endl
+                    << "  - mouse (rotation)" << endl;
         helpStream << "r: reset cam" << endl;
         helpStream << "f: toggle full screen" << endl;
     }

@@ -33,11 +33,13 @@ public: // place public functions or variables declarations here
     ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, vector< vector<ofPoint> > &boundaries);
     
 private: // place private functions or variables declarations here
-    ofMesh mesh;
+    ofVboMesh mesh;
     ofVboMesh graticules;
     void setup();
     
     void addToMesh( vector< vector<ofPoint> > &boundaries , ofFloatColor _color );
+    
+    
     
 };
 
