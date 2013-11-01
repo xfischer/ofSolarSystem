@@ -27,6 +27,7 @@ public: // place public functions or variables declarations here
     double rotationPeriod; // rotation period in Earth days
     string name;
     
+    ofSpherePrimitive sphere;
     
     
     ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod);
@@ -39,7 +40,7 @@ private: // place private functions or variables declarations here
     
     void addToMesh( vector< vector<ofPoint> > &boundaries , ofFloatColor _color );
     
-    
+    ofImage texture;
     
 };
 

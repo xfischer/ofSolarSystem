@@ -63,10 +63,6 @@ private:
 	
 	//slows down the rotation 1 = 1 degree per pixel
 	float dampen;
-
     
-    // texture
-    ofImage texture;
-	GLUquadricObj *quadric;
     
 };

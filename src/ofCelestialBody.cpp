@@ -50,8 +50,8 @@ void ofCelestialBody::addToMesh(vector<vector<ofPoint> > &boundaries, ofFloatCol
 		for (int j = 0; j < boundaries[i].size(); j++){
             
             ofQuaternion latRot, longRot;
-			latRot.makeRotate(boundaries[i][j].y, -1, 0, 0);
-			longRot.makeRotate(boundaries[i][j].x, 0, 1, 0);
+			latRot.makeRotate(boundaries[i][j].y, 1, 0, 0);
+			longRot.makeRotate(boundaries[i][j].x+180, 0, 1, 0);
             
 			ofVec3f worldPoint = latRot * longRot * center;
             
@@ -69,7 +69,10 @@ void ofCelestialBody::addToMesh(vector<vector<ofPoint> > &boundaries, ofFloatCol
 
 void ofCelestialBody::setup(){
     
+    texture.loadImage(name +  ".jpg");
     
+    sphere.setRadius( radius );
+    sphere.setResolution(100);
         
     //setupGraticules
     
@@ -129,13 +132,25 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawGraticules, bool bDrawBound
 	}
     
     if (bDrawGraticules){
+
         
-        //ofSetSphereResolution(25);
-        ofNoFill();
-        ofSetColor(255);
-        ofDrawSphere(radius);
         ofFill();
-        //graticules.draw();
+        ofSetColor(255);
+        sphere.mapTexCoordsFromTexture( texture.getTextureReference() );
+        texture.getTextureReference().bind();
+        
+        sphere.draw();
+        //sphere.drawWireframe();
+        //sphere.drawNormals(20,false);
+        texture.getTextureReference().unbind();
+
+        //
+//        //ofSetSphereResolution(25);
+//        ofFill();
+//        ofSetColor(255);
+//        ofDrawSphere(radius);
+//        ofFill();
+//        //graticules.draw();
     }
 
     if (mesh.getNumVertices()>0 && bDrawBoundaries)

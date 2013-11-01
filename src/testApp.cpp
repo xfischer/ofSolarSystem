@@ -15,7 +15,7 @@ void testApp::setup(){
 	ofSetFrameRate(60);
 	//ofEnableAlphaBlending();
     ofEnableDepthTest();
-    ofSetSphereResolution(25);
+    
 	//NoFill();
 	ofFill();
     
@@ -47,7 +47,7 @@ void testApp::setup(){
     loadSegments( boundaries, "boundaries-simple.txt" );
 #endif
     
-    celestialBodies.push_back( ofCelestialBody(	"Sun", 696342, 0, 0 /* 7.25 */, 25.38 ));
+    celestialBodies.push_back( ofCelestialBody(	"Sun", 696342, 0, 0 /* 7.25 */, /* 25.38 */ 0 ));
     
     celestialBodies.push_back( ofCelestialBody("Mercury", 2439.7, 57909227, 0,  58.646 ));
     celestialBodies.push_back( ofCelestialBody("Venus", 6051.8, 108209475, -2.7 ,  -243.018 ));
@@ -71,15 +71,15 @@ void testApp::setup(){
     cam.setFarClip(778412020+71492);
     easyCam.setFarClip(778412020+71492);
     
-    easyCam.lookAt(ofVec3f(0,0,-1));
-    cam.lookAt(ofVec3f(0,0,778412020+71492));
+    easyCam.setVFlip(true);
+    cam.setVFlip(true);
+//    easyCam.lookAt(ofVec3f(0,0,-1));
+//    cam.lookAt(ofVec3f(0,0,778412020+71492));
     
     //this slows down the rotate a little bit
 	dampen = .4;
     
-        
     
-    texture.loadImage("earth.jpg");
     
 }
 
@@ -97,11 +97,7 @@ void testApp::update(){
 void testApp::draw(){
 	ofBackground(0);
     
-    glMatrixMode(GL_TEXTURE);
-    glPushMatrix();
-    ofScale(2048,1024);
-    glMatrixMode(GL_MODELVIEW);
-
+    
     
     ofPushMatrix();
     
@@ -136,7 +132,7 @@ void testApp::draw(){
             
             ofPushMatrix();
             
-            ofTranslate(0, 0, currentDistance);
+            ofTranslate(0, 0, -currentDistance);
             
             celestialBodies[i].draw(bDrawAxis, bDrawGraticules, bDrawBoundaries);
             
@@ -146,21 +142,8 @@ void testApp::draw(){
         
             ofFill();
   
-        }
-                
-        //draw here as before
-        texture.getTextureReference().bind();
-        ofDrawSphere(400);
-        //ofDrawPlane(0, 0, 400, 200);
+        } // for
         
-        
-        
-       
-
-        //ofDrawSphere(60);
-        //ofSpherePrimitive(60,100);
-        //gluSphere(quadric, 60, 100, 100);
-        texture.getTextureReference().unbind();
     } else {
         
         for(int i = 0; i < celestialBodies.size(); i++){
@@ -180,9 +163,6 @@ void testApp::draw(){
     }
     
     ofPopMatrix();
-    glMatrixMode(GL_TEXTURE);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
     drawHelp();
     
 }
@@ -353,7 +333,7 @@ void testApp::mouseDragged(int x, int y, int button){
     
     if (camIndex == 1) {
     ofVec2f mouse(x,y);
-    ofQuaternion yRot((lastMouse.y-y)*dampen, cam.getXAxis());
+    ofQuaternion yRot((y-lastMouse.y)*dampen, cam.getXAxis());
     ofQuaternion xRot((lastMouse.x-x)*dampen, cam.getYAxis());
     curRot = yRot*xRot;
     cam.rotate(curRot);
