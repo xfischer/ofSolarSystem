@@ -77,15 +77,7 @@ void testApp::setup(){
     //this slows down the rotate a little bit
 	dampen = .4;
     
-    glEnable(GL_DEPTH_TEST); //enable depth comparisons and update the depth buffer
-	ofDisableArbTex(); //needed for textures to work with gluSphere
-	
-	
-    //prepare quadric for sphere
-	quadric = gluNewQuadric();
-	gluQuadricTexture(quadric, GL_TRUE);
-	gluQuadricNormals(quadric, GLU_SMOOTH);
-    
+        
     
     texture.loadImage("earth.jpg");
     
@@ -104,6 +96,12 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 	ofBackground(0);
+    
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    ofScale(2048,1024);
+    glMatrixMode(GL_MODELVIEW);
+
     
     ofPushMatrix();
     
@@ -149,8 +147,19 @@ void testApp::draw(){
             ofFill();
   
         }
+                
+        //draw here as before
         texture.getTextureReference().bind();
-        gluSphere(quadric, 60, 100, 100);
+        ofDrawSphere(400);
+        //ofDrawPlane(0, 0, 400, 200);
+        
+        
+        
+       
+
+        //ofDrawSphere(60);
+        //ofSpherePrimitive(60,100);
+        //gluSphere(quadric, 60, 100, 100);
         texture.getTextureReference().unbind();
     } else {
         
@@ -171,7 +180,9 @@ void testApp::draw(){
     }
     
     ofPopMatrix();
-
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
     drawHelp();
     
 }
