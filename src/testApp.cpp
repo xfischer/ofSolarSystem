@@ -9,61 +9,41 @@
 #include "testApp.h"
 #define SIDEBYSIDE_SEPARATION 50
 
+#ifdef __APPLE__
+#define BOUNDARIES_FILE "boundaries/unix-boundaries-simple.txt"
+#else
+#define BOUNDARIES_FILE "boundaries/unix-boundaries-simple.txt"
+#endif
+
+
 //--------------------------------------------------------------
 void testApp::setup(){
     ofEnableSmoothing();
 	ofSetFrameRate(60);
-	//ofEnableAlphaBlending();
+	ofEnableAlphaBlending();
     ofEnableDepthTest();
+    ofEnableAntiAliasing();
     
-	//NoFill();
-	ofFill();
+
     
-	// create little objects for each city.
-	// A Lat/Lon like this:
-	// Lewiston, Idaho 	W 46 24' N 117 2'
-	// This translate to angles and degrees (1 degree = 1/60. of an angle)
-	// West and South are negative values
+    celestialBodies.push_back( ofCelestialBody(	"Sun", 696342, 0, 0 /* 7.25 */, /* 25.38 */ 0, "sun.jpg" ));
     
-	// here is a list of big cities and their positions
-	// http://www.infoplease.com/ipa/A0001796.html
+    celestialBodies.push_back( ofCelestialBody("Mercury", 2439.7, 57909227, 0,  58.646, "mercury.jpg" ));
+    celestialBodies.push_back( ofCelestialBody("Venus", 6051.8, 108209475, -2.7 ,  -243.018, "venus.jpg" ));
+    celestialBodies.push_back( ofCelestialBody("Earth", 6371.00, 149598262, 23.4393,  0.99726968, "earth.jpg", BOUNDARIES_FILE ));
+    celestialBodies.push_back( ofCelestialBody("Mars", 3389.5, 227943824, 25.2,  1.026, "mars.jpg" ));
+    celestialBodies.push_back( ofCelestialBody("Jupiter", 69911, 778340821, 3.1,  0.41354, "jupiter.jpg" ));
+    celestialBodies.push_back( ofCelestialBody("Saturn", 58232, 1426666422, 26.7,  0.444, "saturn.jpg" ));
+    celestialBodies.push_back( ofCelestialBody("Uranus", 25362, 2870658186, -97.8 ,  -0.718, "uranus.jpg" ));
+    celestialBodies.push_back( ofCelestialBody("Neptune", 24622, 4498396441, 28.3,  0.671, "neptune.jpg" ));
     
-	
-    cities.push_back( (City){ "new york", 40+47/60., -73 + 58/60.}  );
-    cities.push_back( (City) { "aix-en-provence", 43.529, 5.443 });
-    /*
-     cities.push_back( (City){ "tokyo", 35 + 40./60, 139 + 45/60. } );
-     cities.push_back( (City) { "london", 51 + 32/60., -5./60. });
-	 cities.push_back( (City) { "shanghai", 31 + 10/60., 121 + 28/60. });
-	 cities.push_back( (City) { "buenos aires", -34 + 35/60., -58 + 22/60. });
-	 cities.push_back( (City) { "melbourne" , -37 + 47/60., 144 + 58/60. });
-	 cities.push_back( (City) { "detroit", 42 + 19/60., -83 + 2 / 60. });
-	 cities.push_back( (City) { "aix-en-provence", 43.529, 5.443 });
-    */
-    
-#ifdef __APPLE__
-	loadSegments( boundaries, "unix-boundaries-simple.txt" );
-#else
-    loadSegments( boundaries, "boundaries-simple.txt" );
-#endif
-    
-    celestialBodies.push_back( ofCelestialBody(	"Sun", 696342, 0, 0 /* 7.25 */, /* 25.38 */ 0 ));
-    
-    celestialBodies.push_back( ofCelestialBody("Mercury", 2439.7, 57909227, 0,  58.646 ));
-    celestialBodies.push_back( ofCelestialBody("Venus", 6051.8, 108209475, -2.7 ,  -243.018 ));
-    celestialBodies.push_back( ofCelestialBody("Earth", 6371.00, 149598262, 23.4393,  0.99726968, boundaries ));
-    celestialBodies.push_back( ofCelestialBody("Mars", 3389.5, 227943824, 25.2,  1.026 ));
-    celestialBodies.push_back( ofCelestialBody("Jupiter", 69911, 778340821, 3.1,  0.41354 ));
-    celestialBodies.push_back( ofCelestialBody("Saturn", 58232, 1426666422, 26.7,  0.444 ));
-    celestialBodies.push_back( ofCelestialBody("Uranus", 25362, 2870658186, -97.8 ,  -0.718 ));
-    celestialBodies.push_back( ofCelestialBody("Neptune", 24622, 4498396441, 28.3,  0.671 ));
     
     //GUI
     bShowHelp = true;
     
     bDrawAxis = false;
-    bDrawGraticules = true;
-    bDrawBoundaries = true;
+    bDrawTextured = false;
+    bDrawBoundaries = false;
     camIndex = 0;
     
     easyCam.setDistance(1000);
@@ -71,16 +51,17 @@ void testApp::setup(){
     cam.setFarClip(778412020+71492);
     easyCam.setFarClip(778412020+71492);
     
-    easyCam.setVFlip(true);
-    cam.setVFlip(true);
-//    easyCam.lookAt(ofVec3f(0,0,-1));
-//    cam.lookAt(ofVec3f(0,0,778412020+71492));
-    
+    vFlip = true;
+    easyCam.setVFlip(vFlip);
+    cam.setVFlip(vFlip);
+    cam.setPosition(4527.78, -143.096, -8868.1);
+    cam.rotate(
+            ofQuaternion(0.23867,cam.getXAxis()
+                         , 90, cam.getYAxis()
+                         , 1.69485, cam.getZAxis())
+               );
     //this slows down the rotate a little bit
 	dampen = .4;
-    
-    
-    
 }
 
 
@@ -98,7 +79,6 @@ void testApp::draw(){
 	ofBackground(0);
     
     
-    
     ofPushMatrix();
     
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
@@ -107,13 +87,6 @@ void testApp::draw(){
         case 0:     easyCam.begin(); break;
         default:    cam.begin(); break;
     }
-    
-    //Extract the rotation from the current rotation
-    ofVec3f axis;
-    float angle;
-    curRot.getRotate(angle, axis);
-    
-    //cam.rotate(angle, axis.x, axis.y, axis.z);
     
     easyCam.lookAt(cam);
 
@@ -134,7 +107,7 @@ void testApp::draw(){
             
             ofTranslate(0, 0, -currentDistance);
             
-            celestialBodies[i].draw(bDrawAxis, bDrawGraticules, bDrawBoundaries);
+            celestialBodies[i].draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
             
             ofPopMatrix();
             
@@ -147,7 +120,7 @@ void testApp::draw(){
     } else {
         
         for(int i = 0; i < celestialBodies.size(); i++){
-            celestialBodies[i].draw(bDrawAxis, bDrawGraticules, bDrawBoundaries);
+            celestialBodies[i].draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
         }
         
     }
@@ -165,6 +138,8 @@ void testApp::draw(){
     ofPopMatrix();
     drawHelp();
     
+    
+    
 }
 
 void testApp::drawHelp(){
@@ -175,7 +150,7 @@ void testApp::drawHelp(){
 	if (bShowHelp) {
         helpStream << "Showing help (press 'h' to toggle): " << (bShowHelp ? "YES" : "NO") << endl << endl;
 		helpStream << "1: draw axes :" << (bDrawAxis ? "YES" : "NO") << endl;
-		helpStream << "2: draw graticules :" << (bDrawGraticules ? "YES" : "NO") << endl;
+		helpStream << "2: draw textures :" << (bDrawTextured ? "YES" : "NO") << endl;
 		helpStream << "3: draw boundaries :" << (bDrawBoundaries ? "YES" : "NO") << endl;
         helpStream << "c: cycle cameras (current: ";
         switch (camIndex) {
@@ -200,56 +175,11 @@ void testApp::drawHelp(){
     
 }
 
-void testApp::loadSegments( vector< vector<ofPoint> > &segments, string _file){
-    
-	ifstream fileIn;
-    
-	fileIn.open( ofToDataPath( _file ).c_str());
-	if(fileIn.is_open()) {
-        
-		int lineCount = 0;
-        
-		vector<ofPoint> newPoints;
-        
-		while(fileIn != NULL) {
-			string temp;
-			getline(fileIn, temp);
-            
-			// Skip empty lines.
-			if(temp.length() != 0) {
-                
-				vector<string> values = ofSplitString(temp, " ");
-                
-                if ( values[0] == "segment" || values[0].find("segment", 0) != -1){
-                    
-					if (lineCount != 0){
-						segments.push_back( newPoints );
-					}
-                    
-					newPoints.clear();
-				} else {
-					ofPoint newPoint = ofPoint();
-					newPoint.y = ofToFloat( values[0] );
-					newPoint.x = ofToFloat( values[1] );
-                    
-					newPoints.push_back(newPoint);
-				}
-                
-				lineCount++;
-			}
-		}
-        
-		if (lineCount != 0){
-			segments.push_back( newPoints );
-		}
-	}
-    
-}
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
     
-    float moveAmount = 50;
+    float moveAmount = 500;
 
     if (key == OF_KEY_SHIFT){
         easyCam.disableMouseInput();
@@ -289,7 +219,7 @@ void testApp::keyPressed(int key){
     if (key == '1')
         bDrawAxis = !bDrawAxis;
     if (key == '2')
-        bDrawGraticules = !bDrawGraticules;
+        bDrawTextured = !bDrawTextured;
     if (key == '3')
         bDrawBoundaries = !bDrawBoundaries;
     if (key =='c'){
@@ -307,8 +237,18 @@ void testApp::keyPressed(int key){
         bShowHelp = !bShowHelp;
     
     if (key == ' '){
-        cam.dolly(5000);
+        vFlip = !vFlip;
+        easyCam.setVFlip(vFlip);
+        cam.setVFlip(vFlip);
     }
+    
+    
+    cout<<cam.getPosition() << endl;
+    cout<<"roll: " << cam.getRoll()
+        << "pitch: " << cam.getPitch()
+        << "heading: " << cam.getHeading() << endl;
+    
+    
 
 }
 

@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "ofCelestialBody.h"
+#include "ofxSphereCam.h"
 
 typedef struct {
 	string name;
@@ -32,16 +33,17 @@ public:
 private:
 	vector<City> cities;
     
-	void loadSegments( vector< vector<ofPoint> > &segments, string _file);
+	
 	vector< vector<ofPoint> > boundaries;
     
     vector<ofCelestialBody> celestialBodies;
     
-	ofCamera cam;
+	ofxSphereCam cam;
     ofEasyCam easyCam;
     
 	bool bDrawAxis;
-    bool bDrawGraticules;
+    bool bDrawTextured;
+    
     bool bDrawBoundaries;
     int camIndex;
     bool bShiftDown;
@@ -63,6 +65,9 @@ private:
 	
 	//slows down the rotation 1 = 1 degree per pixel
 	float dampen;
+    
+    
+    bool vFlip;
     
     
 };
