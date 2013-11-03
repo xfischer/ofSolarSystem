@@ -176,6 +176,8 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
     
     ofPushMatrix();
     
+    ofTranslate(position);
+    
     ofRotate(inclination, 0, 0, 1);
     
     ofRotate(ofGetElapsedTimeMillis()*rotationPeriod*0.0002, 0, 1, 0);

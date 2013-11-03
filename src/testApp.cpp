@@ -54,12 +54,14 @@ void testApp::setup(){
     vFlip = true;
     easyCam.setVFlip(vFlip);
     cam.setVFlip(vFlip);
-    cam.setPosition(4527.78, -143.096, -8868.1);
-    cam.rotate(
-            ofQuaternion(0.23867,cam.getXAxis()
-                         , 90, cam.getYAxis()
-                         , 1.69485, cam.getZAxis())
-               );
+    ofVec3f camPos = ofVec3f(4527.78, -143.096, -8868.1);
+    cam.moveTo(camPos, 0);
+    
+//    .rotate(
+//            ofQuaternion(0.23867,cam.getXAxis()
+//                         , 90, cam.getYAxis()
+//                         , 1.69485, cam.getZAxis())
+//               );
     //this slows down the rotate a little bit
 	dampen = .4;
 }
@@ -71,6 +73,8 @@ void testApp::update(){
     for(int i = 0; i < celestialBodies.size(); i++){
         celestialBodies[i].update();
     }
+
+    cam.update();
 
 }
 
@@ -103,14 +107,8 @@ void testApp::draw(){
             if (currentDistance > 0)
                 currentDistance += celestialBodies[i].radius + SIDEBYSIDE_SEPARATION;
             
-            ofPushMatrix();
-            
-            ofTranslate(0, 0, -currentDistance);
-            
+            celestialBodies[i].position = ofVec3f(0, 0, -currentDistance);
             celestialBodies[i].draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
-            
-            ofPopMatrix();
-            
             currentDistance += celestialBodies[i].radius + SIDEBYSIDE_SEPARATION;
         
             ofFill();
@@ -180,6 +178,7 @@ void testApp::drawHelp(){
 void testApp::keyPressed(int key){
     
     float moveAmount = 500;
+    ofVec3f moveTo = cam.getPosition();
 
     if (key == OF_KEY_SHIFT){
         easyCam.disableMouseInput();
@@ -188,32 +187,29 @@ void testApp::keyPressed(int key){
 
     if (key == OF_KEY_UP){
         if (bShiftDown){
-            cam.boom(moveAmount);
-            //easyCam.boom(moveAmount);
+            moveTo += cam.getYAxis() * moveAmount; // boom
         }
         else{
-            cam.dolly(-moveAmount);
-            //easyCam.dolly(-moveAmount);
+            moveTo += cam.getZAxis() * -moveAmount; // dolly
         }
     }
     if (key == OF_KEY_DOWN){
         if (bShiftDown){
-            cam.boom(-moveAmount);
-            //easyCam.boom(-moveAmount);
+            moveTo += cam.getYAxis() * -moveAmount; // boom
         }
         else{
-            cam.dolly(moveAmount);
-            //easyCam.dolly(moveAmount);
+            moveTo += cam.getZAxis() * moveAmount; // dolly
         }
     }
-    if (key == OF_KEY_LEFT){
-        cam.truck(-moveAmount);
-        //easyCam.truck(-moveAmount);
-    }
-    if (key == OF_KEY_RIGHT){
-        cam.truck(moveAmount);
-        //easyCam.truck(moveAmount);
-    }
+    if (key == OF_KEY_LEFT)
+        moveTo += cam.getXAxis() * -moveAmount; // truck
+    if (key == OF_KEY_RIGHT)
+        moveTo += cam.getXAxis() * moveAmount; // truck
+    
+    cam.moveTo(moveTo,0);
+
+    
+    
     if (key =='f')
         ofToggleFullscreen();
     if (key == '1')
@@ -236,10 +232,14 @@ void testApp::keyPressed(int key){
     if (key == 'h')
         bShowHelp = !bShowHelp;
     
+    
+    static int test = 0;
     if (key == ' '){
-        vFlip = !vFlip;
-        easyCam.setVFlip(vFlip);
-        cam.setVFlip(vFlip);
+        //        cout<< celestialBodies[5].position << endl;
+        cam.lookAtTo(celestialBodies[test++ % celestialBodies.size()].position, 500);
+//        vFlip = !vFlip;
+//        easyCam.setVFlip(vFlip);
+//        cam.setVFlip(vFlip);
     }
     
     
