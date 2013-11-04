@@ -12,17 +12,17 @@
 #ifdef __APPLE__
 #define BOUNDARIES_FILE "boundaries/unix-boundaries-simple.txt"
 #else
-#define BOUNDARIES_FILE "boundaries/unix-boundaries-simple.txt"
+#define BOUNDARIES_FILE "boundaries/boundaries-simple.txt"
 #endif
 
 
 //--------------------------------------------------------------
 void testApp::setup(){
-    ofEnableSmoothing();
+    //ofEnableSmoothing();
 	ofSetFrameRate(60);
-	ofEnableAlphaBlending();
+	//ofEnableAlphaBlending();
     ofEnableDepthTest();
-    ofEnableAntiAliasing();
+    //ofEnableAntiAliasing();
     
 
     

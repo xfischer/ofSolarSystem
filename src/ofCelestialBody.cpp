@@ -9,6 +9,7 @@
 #include "ofCelestialBody.h"
 #define RADIUSFACTOR 100.
 #define DISTFACTOR 50000.
+#define SPHERE_RES 10
 
 ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, double _inclination, double _rotationPeriod, string textureFileName, string boundariesFileName){
 
@@ -122,7 +123,7 @@ void ofCelestialBody::addToMesh(vector<vector<ofPoint> > &boundaries, ofFloatCol
 void ofCelestialBody::setup(){
     
     sphere.setRadius( radius );
-    sphere.setResolution(100);
+    sphere.setResolution(SPHERE_RES);
     
     setupGraticules();
     
