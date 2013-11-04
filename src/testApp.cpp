@@ -8,7 +8,7 @@
 
 #include "testApp.h"
 #define SIDEBYSIDE_SEPARATION 50
-
+#define FAR_CLIP 778412020+71490
 #ifdef __APPLE__
 #define BOUNDARIES_FILE "boundaries/unix-boundaries-simple.txt"
 #else
@@ -19,7 +19,8 @@
 //--------------------------------------------------------------
 void testApp::setup(){
     //ofEnableSmoothing();
-	ofSetFrameRate(60);
+	//ofSetFrameRate(60);
+    ofSetVerticalSync(true);
 	//ofEnableAlphaBlending();
     ofEnableDepthTest();
     //ofEnableAntiAliasing();
@@ -39,42 +40,41 @@ void testApp::setup(){
     
     
     //GUI
-    bShowHelp = true;
+    bShowHelp = false;
     
     bDrawAxis = false;
-    bDrawTextured = false;
+    bDrawTextured = true;
     bDrawBoundaries = false;
     camIndex = 0;
     
     easyCam.setDistance(1000);
-    cam.setPosition(0, 0, 1000);
-    cam.setFarClip(778412020+71492);
-    easyCam.setFarClip(778412020+71492);
+    sphereCam.setFarClip(FAR_CLIP);
+    cam.setFarClip(FAR_CLIP);
+    easyCam.setFarClip(FAR_CLIP);
     
     vFlip = true;
     easyCam.setVFlip(vFlip);
+    sphereCam.setVFlip(vFlip);
     cam.setVFlip(vFlip);
-    ofVec3f camPos = ofVec3f(4527.78, -143.096, -8868.1);
-    cam.moveTo(camPos, 0);
     
-//    .rotate(
-//            ofQuaternion(0.23867,cam.getXAxis()
-//                         , 90, cam.getYAxis()
-//                         , 1.69485, cam.getZAxis())
-//               );
+    ofVec3f camPos = ofVec3f(4527.78, -143.096, -8868.1);
+    easyCam.setPosition(camPos);
+    easyCam.setTarget(celestialBodies[3].position);
+    
     //this slows down the rotate a little bit
-	dampen = .4;
+	dampen = .2;
 }
 
 
 //--------------------------------------------------------------
 void testApp::update(){
 	ofSetWindowTitle(ofToString(ofGetFrameRate()));
+    
     for(int i = 0; i < celestialBodies.size(); i++){
         celestialBodies[i].update();
     }
-
-    cam.update();
+    
+    sphereCam.update();
 
 }
 
@@ -88,49 +88,37 @@ void testApp::draw(){
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
 
     switch (camIndex) {
-        case 0:     easyCam.begin(); break;
-        default:    cam.begin(); break;
+        case 0:    easyCam.begin(); break;
+        case 1:    sphereCam.begin(); break;
+        case 2:    cam.begin(); break;
     }
     
-    easyCam.lookAt(cam);
-
     
+    double currentDistance = 0;
     
-    // Draw bodies side by side
-    bool bSideBySide = true;
-
-    if (bSideBySide){
-        double currentDistance = 0;
+    for(int i = 0; i < celestialBodies.size(); i++){
         
-        for(int i = 0; i < celestialBodies.size(); i++){
-            
-            if (currentDistance > 0)
-                currentDistance += celestialBodies[i].radius + SIDEBYSIDE_SEPARATION;
-            
-            celestialBodies[i].position = ofVec3f(0, 0, -currentDistance);
-            celestialBodies[i].draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
+        if (currentDistance > 0)
             currentDistance += celestialBodies[i].radius + SIDEBYSIDE_SEPARATION;
         
-            ofFill();
-  
-        } // for
-        
-    } else {
-        
-        for(int i = 0; i < celestialBodies.size(); i++){
-            celestialBodies[i].draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
-        }
-        
-    }
+        celestialBodies[i].position = ofVec3f(0, 0, -currentDistance);
+        celestialBodies[i].draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
+        currentDistance += celestialBodies[i].radius + SIDEBYSIDE_SEPARATION;
+    
+        ofFill();
+
+    } // for
 
     
 	if (bDrawAxis){
+        sphereCam.draw();
         cam.draw();
 	}
     
     switch (camIndex) {
         case 0: easyCam.end(); break;
-        default: cam.end(); break;
+        case 1: sphereCam.end(); break;
+        case 2: cam.end(); break;
     }
     
     ofPopMatrix();
@@ -140,34 +128,57 @@ void testApp::draw(){
     
 }
 
+void testApp::updateCams(ofVec3f position, ofVec3f lookat, ofQuaternion orientation){
+    
+    cam.setPosition(position);
+    easyCam.setPosition(position);
+    sphereCam.moveTo(position, 0);
+    
+    cam.lookAt(lookat);
+    easyCam.lookAt(lookat);
+    sphereCam.lookAtTo(lookat, 0);
+    
+    cam.setOrientation(orientation);
+    easyCam.setOrientation(orientation);
+    sphereCam.setOrientation(orientation);
+    
+}
+
+
 void testApp::drawHelp(){
     stringstream helpStream;
     
     ofSetColor(255);
     
+    helpStream << "h: " << (bShowHelp ? "hide" : "show") << " help";
+
 	if (bShowHelp) {
-        helpStream << "Showing help (press 'h' to toggle): " << (bShowHelp ? "YES" : "NO") << endl << endl;
-		helpStream << "1: draw axes :" << (bDrawAxis ? "YES" : "NO") << endl;
-		helpStream << "2: draw textures :" << (bDrawTextured ? "YES" : "NO") << endl;
-		helpStream << "3: draw boundaries :" << (bDrawBoundaries ? "YES" : "NO") << endl;
-        helpStream << "c: cycle cameras (current: ";
+        helpStream << endl;
+        helpStream << "1: draw axes: " << (bDrawAxis ? "YES" : "NO") << endl;
+		helpStream << "2: draw textures: " << (bDrawTextured ? "YES" : "NO") << endl;
+		helpStream << "3: draw boundaries: " << (bDrawBoundaries ? "YES" : "NO") << endl;
+        helpStream << "c: cycle cameras: ";
         switch (camIndex) {
             case 0:
                 helpStream << "ofEasyCam";
                 break;
             
             case 1:
+                helpStream << "ofxSphereCam";
+                break;
+                
+            case 2:
                 helpStream << "freecam";
                 break;
                 
         };
-        helpStream << ")" << endl;
-        helpStream << "move cameras with:" << endl
-                    << "  - left/right (x axis)" << endl
-                    << "  - up/down (y axis, +shift: z axis)" << endl
-                    << "  - mouse (rotation)" << endl;
+        helpStream << endl;
+        helpStream << "move cameras with mouse:" << endl
+                    << "  - left button: rotate" << endl
+                    << "  - middle or m: xy translate" << endl
+                    << "  - right: z translate" << endl;
         helpStream << "r: reset cam" << endl;
-        helpStream << "f: toggle full screen" << endl;
+        helpStream << "f: toggle full screen";
     }
 	ofDrawBitmapStringHighlight(helpStream.str(), 10, 10);
     
@@ -176,38 +187,6 @@ void testApp::drawHelp(){
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
-    
-    float moveAmount = 500;
-    ofVec3f moveTo = cam.getPosition();
-
-    if (key == OF_KEY_SHIFT){
-        easyCam.disableMouseInput();
-        bShiftDown = true;
-    }
-
-    if (key == OF_KEY_UP){
-        if (bShiftDown){
-            moveTo += cam.getYAxis() * moveAmount; // boom
-        }
-        else{
-            moveTo += cam.getZAxis() * -moveAmount; // dolly
-        }
-    }
-    if (key == OF_KEY_DOWN){
-        if (bShiftDown){
-            moveTo += cam.getYAxis() * -moveAmount; // boom
-        }
-        else{
-            moveTo += cam.getZAxis() * moveAmount; // dolly
-        }
-    }
-    if (key == OF_KEY_LEFT)
-        moveTo += cam.getXAxis() * -moveAmount; // truck
-    if (key == OF_KEY_RIGHT)
-        moveTo += cam.getXAxis() * moveAmount; // truck
-    
-    cam.moveTo(moveTo,0);
-
     
     
     if (key =='f')
@@ -220,44 +199,41 @@ void testApp::keyPressed(int key){
         bDrawBoundaries = !bDrawBoundaries;
     if (key =='c'){
         
-        camIndex = (camIndex + 1) % 2;
+        if (camIndex==0)
+            updateCams(easyCam.getPosition(), easyCam.getLookAtDir()*FAR_CLIP, easyCam.getOrientationQuat());
+        else if (camIndex==1)
+            updateCams(sphereCam.movedTo, sphereCam.lookedAt, sphereCam.getOrientationQuat());
+        else if (camIndex==2)
+            updateCams(cam.getPosition(), cam.getLookAtDir()*FAR_CLIP, cam.getOrientationQuat());
+        
+        camIndex = (camIndex + 1) % 3;
             
         if (camIndex == 0)
             easyCam.enableMouseInput();
-        else
+        else{
             easyCam.disableMouseInput();
+        }
     }
     if (key == 'r')
-        cam.resetTransform();
+        updateCams(ofVec3f(4527.78, -143.096, -8868.1), ofVec3f(0), ofQuaternion(120,ofVec3f(0,1,0)));
     if (key == 'h')
         bShowHelp = !bShowHelp;
     
     
+    //---------------------------------------
+    // tests
     static int test = 0;
     if (key == ' '){
         //        cout<< celestialBodies[5].position << endl;
-        cam.lookAtTo(celestialBodies[test++ % celestialBodies.size()].position, 500);
-//        vFlip = !vFlip;
-//        easyCam.setVFlip(vFlip);
-//        cam.setVFlip(vFlip);
+        sphereCam.lookAtTo(celestialBodies[++test % celestialBodies.size()].position, 500);
+        
+        easyCam.setTarget(celestialBodies[5].position);
     }
-    
-    
-    cout<<cam.getPosition() << endl;
-    cout<<"roll: " << cam.getRoll()
-        << "pitch: " << cam.getPitch()
-        << "heading: " << cam.getHeading() << endl;
-    
-    
 
 }
 
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
-    if (key == OF_KEY_SHIFT){
-        bShiftDown = false;
-        easyCam.enableMouseInput();
-    }
 }
 
 //--------------------------------------------------------------
@@ -271,20 +247,32 @@ void testApp::mouseDragged(int x, int y, int button){
     //cam.tilt((lastMouse.y-y)*dampen);
     //cam.pan((lastMouse.x-x)*dampen);
     
-    if (camIndex == 1) {
-    ofVec2f mouse(x,y);
-    ofQuaternion yRot((y-lastMouse.y)*dampen, cam.getXAxis());
-    ofQuaternion xRot((lastMouse.x-x)*dampen, cam.getYAxis());
-    curRot = yRot*xRot;
-    cam.rotate(curRot);
-        lastMouse = mouse;}
+    if (camIndex == 2) {
+        ofVec2f mouse(x,y);
+        if (button == OF_MOUSE_BUTTON_MIDDLE){
+            // move left/up
+            cam.truck((lastMouse.x-x)/dampen);
+            cam.boom((lastMouse.y-y)/dampen);
+        }
+        else if (button == OF_MOUSE_BUTTON_RIGHT){
+            //move forward/backwards
+            cam.dolly((y-lastMouse.y)/dampen);
+        }
+        else if (button == OF_MOUSE_BUTTON_LEFT){
+            // rotate
+            ofQuaternion yRot((lastMouse.y-y)*dampen, cam.getXAxis());
+            ofQuaternion xRot((x-lastMouse.x)*dampen, cam.getYAxis());
+            curRot = yRot*xRot;
+            cam.rotate(curRot);
+        }
+        lastMouse = mouse;
+    }
 }
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
     //store the last mouse point when it's first pressed to prevent popping
 	lastMouse = ofVec2f(x,y);
-
 }
 
 //--------------------------------------------------------------
