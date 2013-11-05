@@ -19,12 +19,15 @@ public: // place public functions or variables declarations here
     void update();  // update method, used to refresh your objects properties
     void draw(bool axis, bool textured, bool boundaries);    // draw method
     // variables
-    ofVec3f position;
+    
     double radius;
     double distance; // distance from Sun
     double inclination; // orbit to equator inclination
     double rotationPeriod; // rotation period in Earth days
     string name;
+    
+    void setPosition(const ofVec3f& position);
+    ofVec3f& getPosition();
     
     ofSpherePrimitive sphere;
     
@@ -35,9 +38,13 @@ private: // place private functions or variables declarations here
     
     ofVboMesh boundariesMesh;
     ofVboMesh graticulesMesh;
+    ofVboMesh orbitMesh;
+    
     void setup();
     void setupGraticules();
+    void setupOrbitMesh();
     
+    ofVec3f position;
     
     ofImage texture;
     

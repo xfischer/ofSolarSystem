@@ -190,10 +190,14 @@ void testApp::keyPressed(int key){
     // tests
     static int test = 0;
     if (key == ' '){
-        //        cout<< celestialBodies[5].position << endl;
-        sphereCam.lookAtTo(solarSystem.celestialBodies[++test % solarSystem.celestialBodies.size()].position, 500);
         
-        easyCam.setTarget(solarSystem.celestialBodies[5].position);
+        ofVec3f sphereTarget = solarSystem.bodies[++test % solarSystem.bodies.size()].getPosition();
+                cout<< sphereTarget << endl;
+        cout<< test << endl;
+        
+        sphereCam.lookAtTo(sphereTarget, 500);
+        
+        easyCam.setTarget(solarSystem.bodies[5].getPosition());
     }
 
 }

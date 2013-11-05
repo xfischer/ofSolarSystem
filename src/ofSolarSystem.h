@@ -21,7 +21,7 @@ public:
         
     ofSolarSystem();
     
-    vector<ofCelestialBody> celestialBodies;
+    vector<ofCelestialBody> bodies;
     
 private: // place private functions or variables declarations here
     

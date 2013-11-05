@@ -45,6 +45,18 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistan
     
 }
 
+void ofCelestialBody::setPosition(const ofVec3f& _position){
+    
+    position = _position;
+    
+    setupOrbitMesh();
+}
+
+ofVec3f& ofCelestialBody::getPosition(){
+    return position;
+}
+
+
 void ofCelestialBody::loadSegments( vector< vector<ofPoint> > &segments, string _file){
     
 	ifstream fileIn;
@@ -171,6 +183,27 @@ void ofCelestialBody::setupGraticules(){
     
 }
 
+void ofCelestialBody::setupOrbitMesh(){
+    //setupGraticules
+    
+    ofVec3f center = ofVec3f(0,0,position.z);
+    
+    orbitMesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+    orbitMesh.clear();
+    
+    ofQuaternion rot;
+    
+    for (int x = 0; x <=360; x+=1) {
+        
+        rot.makeRotate(x, 0, 1, 0);
+        
+        orbitMesh.addVertex(rot * center);
+        
+    }
+    
+
+}
+
 void ofCelestialBody::update(){
 
 }
@@ -199,29 +232,18 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
     
     if (bDrawTextured){
 
-//        ofFill();
-//        ofSetColor(255);
         sphere.mapTexCoordsFromTexture( texture.getTextureReference() );
         texture.getTextureReference().bind();
-        
         sphere.draw();
-        sphere.drawWireframe();
         //sphere.drawNormals(20,false);
         texture.getTextureReference().unbind();
 
-        //
-//        //ofSetSphereResolution(25);
-//        ofFill();
-//        ofSetColor(255);
-//        ofDrawSphere(radius);
-//        ofFill();
-//        //graticules.draw();
     }
     else{
         
-//        ofSetColor(255);
-//        graticulesMesh.draw();
-        sphere.drawWireframe();
+        ofSetColor(255);
+        graticulesMesh.draw();
+        //sphere.drawWireframe();
 
     }
         
@@ -232,7 +254,8 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
     
     ofPopMatrix();
     
-    
+    ofSetColor(255);
+    orbitMesh.draw();
     
     
 }
