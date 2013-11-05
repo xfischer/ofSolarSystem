@@ -31,6 +31,8 @@ public: // place public functions or variables declarations here
     
     ofSpherePrimitive sphere;
     
+    void setDistanceFactor(float factor);
+    
     ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName, string boundariesFileName);
     ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName);
     
@@ -45,6 +47,7 @@ private: // place private functions or variables declarations here
     void setupOrbitMesh();
     
     ofVec3f position;
+    float distanceFactor;
     
     ofImage texture;
     

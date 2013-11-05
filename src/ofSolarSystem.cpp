@@ -41,22 +41,26 @@ void ofSolarSystem::update(){
 
 void ofSolarSystem::draw(bool axis, bool textured, bool boundaries){
 
-    //-----------------------------------------------------------------
-    // Draw bodies
-    double currentDistance = 0;
-    
-    for(int i = 0; i < bodies.size(); i++){
+    if (mode == SIZE){
         
-        if (currentDistance > 0)
+        //-----------------------------------------------------------------
+        // Draw bodies
+        double currentDistance = 0;
+        
+        for(int i = 0; i < bodies.size(); i++){
+            
+            if (currentDistance > 0)
+                currentDistance += bodies[i].radius + SIDEBYSIDE_SEPARATION;
+            
+            bodies[i].setPosition(ofVec3f(0, 0, -currentDistance));
+            
+            bodies[i].draw(axis, textured, boundaries);
             currentDistance += bodies[i].radius + SIDEBYSIDE_SEPARATION;
-        
-        bodies[i].setPosition(ofVec3f(0, 0, -currentDistance));
-        
-        bodies[i].draw(axis, textured, boundaries);
-        currentDistance += bodies[i].radius + SIDEBYSIDE_SEPARATION;
-        
+            
+        }
     }
     
+    if (mode == DISTANCE){
     
     
 //    //-----------------------------------------------------------------
@@ -68,6 +72,10 @@ void ofSolarSystem::draw(bool axis, bool textured, bool boundaries){
 //                
 //        
 //    }
+    }
+    
+}
 
+void ofSolarSystem::distanceInPercentTo(float percent){
     
 }

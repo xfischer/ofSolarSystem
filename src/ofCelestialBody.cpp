@@ -8,17 +8,19 @@
 
 #include "ofCelestialBody.h"
 #define RADIUSFACTOR 100.
-#define DISTFACTOR 50000.
+#define DISTFACTOR 0
 #define SPHERE_RES 75
 
 
 ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, double _inclination, double _rotationPeriod, string textureFileName, string boundariesFileName){
 
+    distanceFactor = DISTFACTOR;
     name = _name;
     radius = _radius/RADIUSFACTOR;
-    distance = _sunDistance/DISTFACTOR;
+    distance = _sunDistance*DISTFACTOR;
     inclination = _inclination;
     rotationPeriod = _rotationPeriod;
+    
     
     texture.loadImage("textures/" + textureFileName);
     
@@ -33,9 +35,10 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistan
 
 ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, double _inclination, double _rotationPeriod, string textureFileName){
     
+    distanceFactor = DISTFACTOR;
     name = _name;
     radius = _radius/RADIUSFACTOR;
-    distance = _sunDistance/DISTFACTOR;
+    distance = _sunDistance*DISTFACTOR;
     inclination = _inclination;
     rotationPeriod = _rotationPeriod;
     
@@ -56,6 +59,9 @@ ofVec3f& ofCelestialBody::getPosition(){
     return position;
 }
 
+void ofCelestialBody::setDistanceFactor(float factor){
+    
+}
 
 void ofCelestialBody::loadSegments( vector< vector<ofPoint> > &segments, string _file){
     

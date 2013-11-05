@@ -46,6 +46,9 @@ void testApp::setup(){
     
     //this slows down the rotate a little bit
 	dampen = .2;
+    
+    
+    solarSystem.mode = SIZE;
 }
 
 
@@ -198,6 +201,13 @@ void testApp::keyPressed(int key){
         sphereCam.lookAtTo(sphereTarget, 500);
         
         easyCam.setTarget(solarSystem.bodies[5].getPosition());
+    }
+    
+    if (key == 'd'){
+        solarSystem.mode = DISTANCE;
+    }
+    if (key == 's'){
+        solarSystem.mode = SIZE;
     }
 
 }

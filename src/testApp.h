@@ -32,8 +32,7 @@ public:
     
 private:
 	vector<City> cities;
-    
-	
+    	
 	vector< vector<ofPoint> > boundaries;
     
     ofSolarSystem solarSystem;

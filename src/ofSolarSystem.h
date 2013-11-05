@@ -12,6 +12,8 @@
 #include "ofMain.h"
 #include "ofCelestialBody.h"
 
+enum ComparisonMode { SIZE = 0 , DISTANCE = 1 };
+
 class ofSolarSystem {
     
 public:
@@ -22,6 +24,10 @@ public:
     ofSolarSystem();
     
     vector<ofCelestialBody> bodies;
+    
+    ComparisonMode mode;
+    
+    void distanceInPercentTo(float percent); // change planet distances using easing (ofxTween)
     
 private: // place private functions or variables declarations here
     
