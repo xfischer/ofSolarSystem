@@ -31,6 +31,7 @@
 		25842D8E18074B170044A4CB /* ofxSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 25842D8318074B170044A4CB /* ofxSlider.cpp */; };
 		25842D8F18074B170044A4CB /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 25842D8518074B170044A4CB /* ofxSliderGroup.cpp */; };
 		25842D9018074B170044A4CB /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 25842D8718074B170044A4CB /* ofxToggle.cpp */; };
+		25B9E25D1829953900BB8C4C /* ofSolarSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E25B1829953900BB8C4C /* ofSolarSystem.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -134,6 +135,8 @@
 		25842D8618074B170044A4CB /* ofxSliderGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxSliderGroup.h; path = ../../../addons/ofxGui/src/ofxSliderGroup.h; sourceTree = "<group>"; };
 		25842D8718074B170044A4CB /* ofxToggle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxToggle.cpp; path = ../../../addons/ofxGui/src/ofxToggle.cpp; sourceTree = "<group>"; };
 		25842D8818074B170044A4CB /* ofxToggle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxToggle.h; path = ../../../addons/ofxGui/src/ofxToggle.h; sourceTree = "<group>"; };
+		25B9E25B1829953900BB8C4C /* ofSolarSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofSolarSystem.cpp; sourceTree = "<group>"; };
+		25B9E25C1829953900BB8C4C /* ofSolarSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofSolarSystem.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -377,6 +380,8 @@
 				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
 				254131D418148443001DC663 /* ofCelestialBody.cpp */,
 				254131D518148443001DC663 /* ofCelestialBody.h */,
+				25B9E25B1829953900BB8C4C /* ofSolarSystem.cpp */,
+				25B9E25C1829953900BB8C4C /* ofSolarSystem.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -499,6 +504,7 @@
 				2562B39018246742004D705B /* ofxEasingExpo.cpp in Sources */,
 				2562B39A1824676D004D705B /* ofxSphereCam.cpp in Sources */,
 				2562B38B18246742004D705B /* ofxEasingBack.cpp in Sources */,
+				25B9E25D1829953900BB8C4C /* ofSolarSystem.cpp in Sources */,
 				25842D9018074B170044A4CB /* ofxToggle.cpp in Sources */,
 				2562B39518246742004D705B /* ofxEasingSine.cpp in Sources */,
 				254131D618148443001DC663 /* ofCelestialBody.cpp in Sources */,

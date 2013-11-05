@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofCelestialBody.h"
 #include "ofxSphereCam.h"
+#include "ofSolarSystem.h"
 
 typedef struct {
 	string name;
@@ -35,7 +36,7 @@ private:
 	
 	vector< vector<ofPoint> > boundaries;
     
-    vector<ofCelestialBody> celestialBodies;
+    ofSolarSystem solarSystem;
     
 	ofxSphereCam sphereCam;
     ofEasyCam easyCam;

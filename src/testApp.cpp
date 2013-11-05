@@ -7,13 +7,8 @@
  */
 
 #include "testApp.h"
-#define SIDEBYSIDE_SEPARATION 50
 #define FAR_CLIP 778412020+71490
-#ifdef __APPLE__
-#define BOUNDARIES_FILE "boundaries/unix-boundaries-simple.txt"
-#else
-#define BOUNDARIES_FILE "boundaries/boundaries-simple.txt"
-#endif
+
 
 
 //--------------------------------------------------------------
@@ -25,18 +20,6 @@ void testApp::setup(){
     ofEnableDepthTest();
     //ofEnableAntiAliasing();
     
-
-    
-    celestialBodies.push_back( ofCelestialBody(	"Sun", 696342, 0, 0 /* 7.25 */, /* 25.38 */ 0, "sun.jpg" ));
-    
-    celestialBodies.push_back( ofCelestialBody("Mercury", 2439.7, 57909227, 0,  58.646, "mercury.jpg" ));
-    celestialBodies.push_back( ofCelestialBody("Venus", 6051.8, 108209475, -2.7 ,  -243.018, "venus.jpg" ));
-    celestialBodies.push_back( ofCelestialBody("Earth", 6371.00, 149598262, 23.4393,  0.99726968, "earth.jpg", BOUNDARIES_FILE ));
-    celestialBodies.push_back( ofCelestialBody("Mars", 3389.5, 227943824, 25.2,  1.026, "mars.jpg" ));
-    celestialBodies.push_back( ofCelestialBody("Jupiter", 69911, 778340821, 3.1,  0.41354, "jupiter.jpg" ));
-    celestialBodies.push_back( ofCelestialBody("Saturn", 58232, 1426666422, 26.7,  0.444, "saturn.jpg" ));
-    celestialBodies.push_back( ofCelestialBody("Uranus", 25362, 2870658186, -97.8 ,  -0.718, "uranus.jpg" ));
-    celestialBodies.push_back( ofCelestialBody("Neptune", 24622, 4498396441, 28.3,  0.671, "neptune.jpg" ));
     
     
     //GUI
@@ -57,9 +40,9 @@ void testApp::setup(){
     sphereCam.setVFlip(vFlip);
     cam.setVFlip(vFlip);
     
-    ofVec3f camPos = ofVec3f(4527.78, -143.096, -8868.1);
+    ofVec3f camPos = ofVec3f(10000, 0, -10000);
     easyCam.setPosition(camPos);
-    easyCam.setTarget(celestialBodies[3].position);
+    easyCam.setTarget(ofVec3f(0,0,-10000));
     
     //this slows down the rotate a little bit
 	dampen = .2;
@@ -70,9 +53,7 @@ void testApp::setup(){
 void testApp::update(){
 	ofSetWindowTitle(ofToString(ofGetFrameRate()));
     
-    for(int i = 0; i < celestialBodies.size(); i++){
-        celestialBodies[i].update();
-    }
+    solarSystem.update();
     
     sphereCam.update();
 
@@ -93,22 +74,7 @@ void testApp::draw(){
         case 2:    cam.begin(); break;
     }
     
-    
-    double currentDistance = 0;
-    
-    for(int i = 0; i < celestialBodies.size(); i++){
-        
-        if (currentDistance > 0)
-            currentDistance += celestialBodies[i].radius + SIDEBYSIDE_SEPARATION;
-        
-        celestialBodies[i].position = ofVec3f(0, 0, -currentDistance);
-        celestialBodies[i].draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
-        currentDistance += celestialBodies[i].radius + SIDEBYSIDE_SEPARATION;
-    
-        ofFill();
-
-    } // for
-
+    solarSystem.draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
     
 	if (bDrawAxis){
         sphereCam.draw();
@@ -225,9 +191,9 @@ void testApp::keyPressed(int key){
     static int test = 0;
     if (key == ' '){
         //        cout<< celestialBodies[5].position << endl;
-        sphereCam.lookAtTo(celestialBodies[++test % celestialBodies.size()].position, 500);
+        sphereCam.lookAtTo(solarSystem.celestialBodies[++test % solarSystem.celestialBodies.size()].position, 500);
         
-        easyCam.setTarget(celestialBodies[5].position);
+        easyCam.setTarget(solarSystem.celestialBodies[5].position);
     }
 
 }
@@ -260,8 +226,8 @@ void testApp::mouseDragged(int x, int y, int button){
         }
         else if (button == OF_MOUSE_BUTTON_LEFT){
             // rotate
-            ofQuaternion yRot((lastMouse.y-y)*dampen, cam.getXAxis());
-            ofQuaternion xRot((x-lastMouse.x)*dampen, cam.getYAxis());
+            ofQuaternion yRot((y-lastMouse.y)*dampen, cam.getXAxis());
+            ofQuaternion xRot((lastMouse.x-x)*dampen, cam.getYAxis());
             curRot = yRot*xRot;
             cam.rotate(curRot);
         }

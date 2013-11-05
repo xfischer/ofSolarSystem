@@ -9,7 +9,8 @@
 #include "ofCelestialBody.h"
 #define RADIUSFACTOR 100.
 #define DISTFACTOR 50000.
-#define SPHERE_RES 100
+#define SPHERE_RES 75
+
 
 ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, double _inclination, double _rotationPeriod, string textureFileName, string boundariesFileName){
 
@@ -124,6 +125,7 @@ void ofCelestialBody::setup(){
     
     sphere.setRadius( radius );
     sphere.setResolution(SPHERE_RES);
+//    sphere.setResolution(    ofMap(radius/RADIUSFACTOR, 2000/RADIUSFACTOR, 696342/RADIUSFACTOR, 100, 1000));
     
     setupGraticules();
     
@@ -179,6 +181,14 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
     
     ofTranslate(position);
     
+    ofPushMatrix();
+    
+    ofSetColor(255);
+    ofTranslate(0,-radius*1.5,0);
+    ofDrawBitmapString(name, 0, 0);
+
+    ofPopMatrix();
+    
     ofRotate(inclination, 0, 0, 1);
     
     ofRotate(ofGetElapsedTimeMillis()*rotationPeriod*0.0002, 0, 1, 0);
@@ -189,13 +199,13 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
     
     if (bDrawTextured){
 
-        ofFill();
-        ofSetColor(255);
+//        ofFill();
+//        ofSetColor(255);
         sphere.mapTexCoordsFromTexture( texture.getTextureReference() );
         texture.getTextureReference().bind();
         
         sphere.draw();
-        //sphere.drawWireframe();
+        sphere.drawWireframe();
         //sphere.drawNormals(20,false);
         texture.getTextureReference().unbind();
 
@@ -208,8 +218,10 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
 //        //graticules.draw();
     }
     else{
-        ofSetColor(255);
-        graticulesMesh.draw();
+        
+//        ofSetColor(255);
+//        graticulesMesh.draw();
+        sphere.drawWireframe();
 
     }
         
@@ -217,12 +229,7 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
     if (boundariesMesh.getNumVertices()>0 && bDrawBoundaries)
         boundariesMesh.draw();
     
-    ofSetColor(255);
     
-    ofTranslate(0,radius*1.1,0);
-    
-    ofDrawBitmapString(name, 0, 0);
-
     ofPopMatrix();
     
     
