@@ -8,16 +8,14 @@
 
 #include "ofCelestialBody.h"
 #define RADIUSFACTOR 100.
-#define DISTFACTOR 0
 #define SPHERE_RES 75
 
 
 ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, double _inclination, double _rotationPeriod, string textureFileName, string boundariesFileName){
 
-    distanceFactor = DISTFACTOR;
     name = _name;
     radius = _radius/RADIUSFACTOR;
-    distance = _sunDistance*DISTFACTOR;
+    distance = _sunDistance/RADIUSFACTOR;
     inclination = _inclination;
     rotationPeriod = _rotationPeriod;
     
@@ -35,10 +33,9 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistan
 
 ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, double _inclination, double _rotationPeriod, string textureFileName){
     
-    distanceFactor = DISTFACTOR;
     name = _name;
     radius = _radius/RADIUSFACTOR;
-    distance = _sunDistance*DISTFACTOR;
+    distance = _sunDistance/RADIUSFACTOR;
     inclination = _inclination;
     rotationPeriod = _rotationPeriod;
     
@@ -57,10 +54,6 @@ void ofCelestialBody::setPosition(const ofVec3f& _position){
 
 ofVec3f& ofCelestialBody::getPosition(){
     return position;
-}
-
-void ofCelestialBody::setDistanceFactor(float factor){
-    
 }
 
 void ofCelestialBody::loadSegments( vector< vector<ofPoint> > &segments, string _file){
@@ -260,7 +253,8 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
     
     ofPopMatrix();
     
-    ofSetColor(255);
+    //ofSetColor(64);
+    ofSetColor(255, 255, 255, 64);
     orbitMesh.draw();
     
     

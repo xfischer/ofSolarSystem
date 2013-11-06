@@ -34,6 +34,48 @@ ofSolarSystem::ofSolarSystem(){
 }
 
 void ofSolarSystem::update(){
+    
+    if (mode == SIZE){
+        
+        //-----------------------------------------------------------------
+        // put bodies one next to another
+        double dist = 0;
+        
+        for(int i = 0; i < bodies.size(); i++){
+            
+            if (dist > 0)
+                dist += bodies[i].radius + SIDEBYSIDE_SEPARATION;
+            
+            bodies[i].setPosition(ofVec3f(0, 0, -dist));
+            
+            dist += bodies[i].radius + SIDEBYSIDE_SEPARATION;
+            
+        }
+    }
+    
+    if (mode == DISTANCE){
+        
+        
+        //-----------------------------------------------------------------
+        // put bodies with real relative distances from Sun
+        double dist;
+        double sunRadius;
+        
+        for(int i = 0; i < bodies.size(); i++){
+            
+            if (i == 0){
+                dist = 0;
+                sunRadius = bodies[i].radius;
+            }
+            else
+                dist = bodies[i].distance/3000. + sunRadius;
+            
+            bodies[i].setPosition(ofVec3f(0, 0, -dist));
+                
+        }
+    }
+
+    
     for(int i = 0; i < bodies.size(); i++){
         bodies[i].update();
     }
@@ -41,37 +83,8 @@ void ofSolarSystem::update(){
 
 void ofSolarSystem::draw(bool axis, bool textured, bool boundaries){
 
-    if (mode == SIZE){
-        
-        //-----------------------------------------------------------------
-        // Draw bodies
-        double currentDistance = 0;
-        
-        for(int i = 0; i < bodies.size(); i++){
-            
-            if (currentDistance > 0)
-                currentDistance += bodies[i].radius + SIDEBYSIDE_SEPARATION;
-            
-            bodies[i].setPosition(ofVec3f(0, 0, -currentDistance));
-            
-            bodies[i].draw(axis, textured, boundaries);
-            currentDistance += bodies[i].radius + SIDEBYSIDE_SEPARATION;
-            
-        }
-    }
-    
-    if (mode == DISTANCE){
-    
-    
-//    //-----------------------------------------------------------------
-//    // Draw orbits
-//    for(int i = 0; i < bodies.size(); i++){
-//        
-//        bodies[i].setPosition(ofVec3f(0, 0, -currentDistance));
-//        
-//                
-//        
-//    }
+    for(int i = 0; i < bodies.size(); i++){
+        bodies[i].draw(axis, textured, boundaries);
     }
     
 }
