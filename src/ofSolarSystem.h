@@ -12,12 +12,14 @@
 #include "ofMain.h"
 #include "ofCelestialBody.h"
 
-enum ComparisonMode { SIZE = 0 , DISTANCE = 1 };
 
 class ofSolarSystem {
     
 public:
     
+	
+	enum ComparisonMode { SIZE = 0 , DISTANCE = 1 };
+
     void update();
     void draw(bool axis, bool textured, bool boundaries);
         

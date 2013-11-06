@@ -48,7 +48,7 @@ void testApp::setup(){
 	dampen = .2;
     
     
-    solarSystem.mode = SIZE;
+    solarSystem.mode = ofSolarSystem::SIZE;
 }
 
 
@@ -204,10 +204,10 @@ void testApp::keyPressed(int key){
     }
     
     if (key == 'd'){
-        solarSystem.mode = DISTANCE;
+		solarSystem.mode = ofSolarSystem::DISTANCE;
     }
     if (key == 's'){
-        solarSystem.mode = SIZE;
+        solarSystem.mode = ofSolarSystem::SIZE;
     }
 
 }

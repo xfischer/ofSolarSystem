@@ -107,6 +107,7 @@
     <ClCompile Include="src\3DUtils.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofCelestialBody.cpp" />
+    <ClCompile Include="src\ofSolarSystem.cpp" />
     <ClCompile Include="src\testApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +127,7 @@
     <ClInclude Include="..\..\..\addons\ofxTween\src\ofxTween.h" />
     <ClInclude Include="src\3DUtils.h" />
     <ClInclude Include="src\ofCelestialBody.h" />
+    <ClInclude Include="src\ofSolarSystem.h" />
     <ClInclude Include="src\testApp.h" />
   </ItemGroup>
   <ItemGroup>

@@ -55,6 +55,9 @@
     <ClCompile Include="..\..\..\addons\ofxSphereCam\src\ofxSphereCam.cpp">
       <Filter>addons\ofxSphereCam\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\ofSolarSystem.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -130,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxSphereCam\src\ofxSphereCam.h">
       <Filter>addons\ofxSphereCam\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ofSolarSystem.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
