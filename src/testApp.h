@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofCelestialBody.h"
 #include "ofxSphereCam.h"
 #include "ofSolarSystem.h"
 

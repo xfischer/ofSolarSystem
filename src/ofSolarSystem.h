@@ -2,7 +2,7 @@
 //  ofSolarSystem.h
 //  RealDirections
 //
-//  Created by Maison on 05/11/2013.
+//  Created by Xavier Fischer on 05/11/2013.
 //
 //
 
@@ -30,10 +30,6 @@ public:
     ComparisonMode mode;
     
     void distanceInPercentTo(float percent); // change planet distances using easing (ofxTween)
-    
-private: // place private functions or variables declarations here
-    
-    void setup();
     
     
 };

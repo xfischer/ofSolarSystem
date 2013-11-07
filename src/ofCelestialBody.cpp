@@ -15,6 +15,7 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistan
 
     name = _name;
     radius = _radius/RADIUSFACTOR;
+    extent = radius;
     distance = _sunDistance/RADIUSFACTOR;
     inclination = _inclination;
     rotationPeriod = _rotationPeriod;
@@ -35,6 +36,7 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistan
     
     name = _name;
     radius = _radius/RADIUSFACTOR;
+    extent = radius;
     distance = _sunDistance/RADIUSFACTOR;
     inclination = _inclination;
     rotationPeriod = _rotationPeriod;
@@ -101,6 +103,7 @@ void ofCelestialBody::loadSegments( vector< vector<ofPoint> > &segments, string 
 	}
     
 }
+
 void ofCelestialBody::addToMesh(vector<vector<ofPoint> > &boundaries, ofFloatColor _color){
     
     boundariesMesh.setMode(OF_PRIMITIVE_LINES);
@@ -183,7 +186,6 @@ void ofCelestialBody::setupGraticules(){
 }
 
 void ofCelestialBody::setupOrbitMesh(){
-    //setupGraticules
     
     ofVec3f center = ofVec3f(0,0,position.z);
     
@@ -202,6 +204,33 @@ void ofCelestialBody::setupOrbitMesh(){
     
 
 }
+
+void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTextureFile){
+    
+    ringMesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+    ringMesh.clear();
+    startRadius /= RADIUSFACTOR;
+    endRadius /= RADIUSFACTOR;
+    extent += endRadius-radius;
+    ringTexture.loadImage("textures/" + ringTextureFile);
+    
+    ofVec3f radIn = ofVec3f(0,0,startRadius);
+    ofVec3f radOut = ofVec3f(0,0,endRadius);
+    
+    
+    ofQuaternion rot;
+    
+    for (int x = 0; x <=360; x+=1) {
+        
+        rot.makeRotate(x, 0, 1, 0);
+        
+        ringMesh.addVertex(rot * radIn);
+        ringMesh.addVertex(rot * radOut);
+        
+        
+    }
+}
+
 
 void ofCelestialBody::update(){
 
@@ -236,12 +265,26 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
         sphere.draw();
         //sphere.drawNormals(20,false);
         texture.getTextureReference().unbind();
+        
+        
+        if (ringMesh.getNumVertices()>0)
+        {
+            ringTexture.getTextureReference().bind();
+            ringMesh.draw();
+            ringTexture.getTextureReference().unbind();
+        }
 
     }
     else{
         
         ofSetColor(255);
         graticulesMesh.draw();
+        
+
+//        ofSetColor(ofColor::green);
+        if (ringMesh.getNumVertices()>0)
+            ringMesh.drawWireframe();
+
         //sphere.drawWireframe();
 
     }

@@ -20,6 +20,7 @@ public: // place public functions or variables declarations here
     void draw(bool axis, bool textured, bool boundaries);    // draw method
     // variables
     
+    double extent;
     double radius;
     double distance; // distance from Sun
     double inclination; // orbit to equator inclination
@@ -31,6 +32,8 @@ public: // place public functions or variables declarations here
     
     ofSpherePrimitive sphere;
     
+    void addRing(float startRadius, float endRadius, string ringTexture);
+    
     ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName, string boundariesFileName);
     ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName);
     
@@ -39,6 +42,7 @@ private: // place private functions or variables declarations here
     ofVboMesh boundariesMesh;
     ofVboMesh graticulesMesh;
     ofVboMesh orbitMesh;
+    ofVboMesh ringMesh;
     
     void setup();
     void setupGraticules();
@@ -47,10 +51,13 @@ private: // place private functions or variables declarations here
     ofVec3f position;
     
     ofImage texture;
+    ofImage ringTexture;
+
     
     void loadSegments( vector< vector<ofPoint> > &segments, string _file);
     void addToMesh( vector< vector<ofPoint> > &boundaries , ofFloatColor _color );
 
+    
     
 };
 
