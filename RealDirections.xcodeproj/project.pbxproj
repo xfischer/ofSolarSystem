@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		254131D618148443001DC663 /* ofCelestialBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 254131D418148443001DC663 /* ofCelestialBody.cpp */; };
-		2562B36418246546004D705B /* 3DUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2562B36218246546004D705B /* 3DUtils.cpp */; };
+		2562B36418246546004D705B /* rd3DUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2562B36218246546004D705B /* rd3DUtils.cpp */; };
 		2562B38A18246742004D705B /* ofxEasing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2562B37018246741004D705B /* ofxEasing.cpp */; };
 		2562B38B18246742004D705B /* ofxEasingBack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2562B37218246741004D705B /* ofxEasingBack.cpp */; };
 		2562B38C18246742004D705B /* ofxEasingBounce.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2562B37418246741004D705B /* ofxEasingBounce.cpp */; };
@@ -87,8 +87,8 @@
 /* Begin PBXFileReference section */
 		254131D418148443001DC663 /* ofCelestialBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofCelestialBody.cpp; sourceTree = "<group>"; };
 		254131D518148443001DC663 /* ofCelestialBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofCelestialBody.h; sourceTree = "<group>"; };
-		2562B36218246546004D705B /* 3DUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = 3DUtils.cpp; sourceTree = "<group>"; };
-		2562B36318246546004D705B /* 3DUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 3DUtils.h; sourceTree = "<group>"; };
+		2562B36218246546004D705B /* rd3DUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rd3DUtils.cpp; sourceTree = "<group>"; };
+		2562B36318246546004D705B /* rd3DUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rd3DUtils.h; sourceTree = "<group>"; };
 		2562B36F18246741004D705B /* easing_terms_of_use.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = easing_terms_of_use.html; sourceTree = "<group>"; };
 		2562B37018246741004D705B /* ofxEasing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxEasing.cpp; sourceTree = "<group>"; };
 		2562B37118246741004D705B /* ofxEasing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxEasing.h; sourceTree = "<group>"; };
@@ -194,8 +194,8 @@
 		2562B3651824655D004D705B /* util */ = {
 			isa = PBXGroup;
 			children = (
-				2562B36218246546004D705B /* 3DUtils.cpp */,
-				2562B36318246546004D705B /* 3DUtils.h */,
+				2562B36218246546004D705B /* rd3DUtils.cpp */,
+				2562B36318246546004D705B /* rd3DUtils.h */,
 			);
 			name = util;
 			sourceTree = "<group>";
@@ -482,7 +482,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2562B36418246546004D705B /* 3DUtils.cpp in Sources */,
+				2562B36418246546004D705B /* rd3DUtils.cpp in Sources */,
 				2562B38C18246742004D705B /* ofxEasingBounce.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */,

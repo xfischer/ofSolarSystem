@@ -32,7 +32,7 @@ public: // place public functions or variables declarations here
     
     ofSpherePrimitive sphere;
     
-    void addRing(float startRadius, float endRadius, string ringTexture);
+    void addRing(float startRadius, float endRadius, string ringTextureFile, string ringAlphaFile);
     
     ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName, string boundariesFileName);
     ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName);
@@ -47,7 +47,7 @@ private: // place private functions or variables declarations here
     void setup();
     void setupGraticules();
     void setupOrbitMesh();
-	void setupRingMesh(float startRadius, float endRadius, string ringTexture);
+	void setupRingMesh(float startRadius, float endRadius);
     
     ofVec3f position;
     

@@ -7,6 +7,7 @@
 //
 
 #include "ofCelestialBody.h"
+#include "rd3DUtils.h"
 #define RADIUSFACTOR 100.
 #define SPHERE_RES 75
 
@@ -205,18 +206,19 @@ void ofCelestialBody::setupOrbitMesh(){
 
 }
 
-void ofCelestialBody::setupRingMesh(float startRadius, float endRadius, string ringTextureFile){
+void ofCelestialBody::setupRingMesh(float startRadius, float endRadius){
     
     ringMesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
     ringMesh.clear();
     startRadius /= RADIUSFACTOR;
     endRadius /= RADIUSFACTOR;
     extent += endRadius-radius;
-    ringTexture.loadImage("textures/" + ringTextureFile);
+    
+    int w = ringTexture.width;
+    int h = ringTexture.height;
     
     ofVec3f radIn = ofVec3f(0,0,startRadius);
     ofVec3f radOut = ofVec3f(0,0,endRadius);
-    
     
     ofQuaternion rot;
     
@@ -224,14 +226,21 @@ void ofCelestialBody::setupRingMesh(float startRadius, float endRadius, string r
         
         rot.makeRotate(x, 0, 1, 0);
         
-        ringMesh.addVertex(rot * radIn);
+        
         ringMesh.addVertex(rot * radOut);
+        ringMesh.addTexCoord( ofPoint(0, (x*h)/360));
+        
+        ringMesh.addVertex(rot * radIn);
+        ringMesh.addTexCoord( ofPoint(w, (x*h)/360));
 		
     }
 }
 
-void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTextureFile){
-	setupRingMesh(startRadius, endRadius, ringTextureFile);
+void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTextureFile, string ringAlphaFile){
+    
+    ringTexture = rd3DUtils::combineColorAlpha("textures/" + ringTextureFile, "textures/" + ringAlphaFile);
+    
+	setupRingMesh(startRadius, endRadius);
 }
 
 void ofCelestialBody::update(){

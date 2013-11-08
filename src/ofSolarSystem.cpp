@@ -30,12 +30,12 @@ ofSolarSystem::ofSolarSystem(){
     bodies.push_back( ofCelestialBody("Mars", 3389.5, 227943824, 25.2,  1.026, "mars.jpg" ));
     bodies.push_back( ofCelestialBody("Jupiter", 69911, 778340821, 3.1,  0.41354, "jupiter.jpg" ));
     
-    ofCelestialBody saturn = ofCelestialBody("Saturn", 58232, 1426666422, 26.7,  0.444, "saturn.jpg" );
-    saturn.addRing(66900, 181000, "saturnringcolor.jpg");
+    ofCelestialBody saturn = ofCelestialBody("Saturn", 58232, 1426666422, 26.7,  0.444, "saturnhidef.jpg" );
+    saturn.addRing(74500, 140000, "saturnringcolor.jpg", "saturnringpattern.gif");
     bodies.push_back( saturn );
     
     ofCelestialBody uranus = ofCelestialBody("Uranus", 25362, 2870658186, -97.8 ,  -0.718, "uranus.jpg" );
-    uranus.addRing(38000, 51140, "uranusringcolor.jpg");
+    uranus.addRing(38000, 51140, "uranusringcolor.jpg", "uranusringtrans.gif");
     bodies.push_back( uranus );
     bodies.push_back( ofCelestialBody("Neptune", 24622, 4498396441, 28.3,  0.671, "neptune.jpg" ));
 

@@ -49,6 +49,7 @@ void testApp::setup(){
     
     
     solarSystem.mode = ofSolarSystem::SIZE;
+    
 }
 
 
@@ -65,7 +66,6 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 	ofBackground(0);
-    
     
     ofPushMatrix();
     
