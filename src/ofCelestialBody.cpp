@@ -205,7 +205,7 @@ void ofCelestialBody::setupOrbitMesh(){
 
 }
 
-void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTextureFile){
+void ofCelestialBody::setupRingMesh(float startRadius, float endRadius, string ringTextureFile){
     
     ringMesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
     ringMesh.clear();
@@ -226,11 +226,13 @@ void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTex
         
         ringMesh.addVertex(rot * radIn);
         ringMesh.addVertex(rot * radOut);
-        
-        
+		
     }
 }
 
+void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTextureFile){
+	setupRingMesh(startRadius, endRadius, ringTextureFile);
+}
 
 void ofCelestialBody::update(){
 

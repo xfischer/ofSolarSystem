@@ -47,6 +47,7 @@ private: // place private functions or variables declarations here
     void setup();
     void setupGraticules();
     void setupOrbitMesh();
+	void setupRingMesh(float startRadius, float endRadius, string ringTexture);
     
     ofVec3f position;
     
