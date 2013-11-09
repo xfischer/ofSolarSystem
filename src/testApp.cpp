@@ -10,7 +10,6 @@
 #define FAR_CLIP 778412020+71490
 
 
-
 //--------------------------------------------------------------
 void testApp::setup(){
     //ofEnableSmoothing();
@@ -65,6 +64,7 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
+
 	ofBackground(0);
     
     ofPushMatrix();
@@ -92,8 +92,6 @@ void testApp::draw(){
     
     ofPopMatrix();
     drawHelp();
-    
-    
     
 }
 
@@ -191,16 +189,43 @@ void testApp::keyPressed(int key){
     
     //---------------------------------------
     // tests
-    static int test = 0;
+    static int test = solarSystem.bodies.size();
     if (key == ' '){
         
-        ofVec3f sphereTarget = solarSystem.bodies[++test % solarSystem.bodies.size()].getPosition();
-                cout<< sphereTarget << endl;
-        cout<< test << endl;
+        if (camIndex == 1){
+            
+            ofCelestialBody currentBody = solarSystem.bodies[--test % solarSystem.bodies.size()];
+            ofVec3f sphereLookAt;
+            ofVec3f sphereTarget;
+            
+            if (solarSystem.mode == ofSolarSystem::SIZE){
         
-        sphereCam.lookAtTo(sphereTarget, 500);
-        
-        easyCam.setTarget(solarSystem.bodies[5].getPosition());
+                // view planet by planet faced to planet along x axis
+                sphereLookAt = currentBody.getPosition();
+                sphereTarget = sphereLookAt;
+                sphereTarget.x += currentBody.radius * 2.5;
+                sphereTarget.y -= currentBody.radius * 1;
+            
+            }
+            
+            if (solarSystem.mode == ofSolarSystem::DISTANCE){
+                
+                sphereLookAt = solarSystem.bodies[0].getPosition();
+                
+                sphereTarget = currentBody.getPosition();
+                sphereTarget.z -= currentBody.radius * 10.;
+                sphereTarget.y -= currentBody.radius * 2.;
+
+                
+            }
+            
+            sphereCam.lookAtTo(sphereLookAt, 5000);
+            sphereCam.moveTo(sphereTarget, 5000);
+            
+            
+            
+            easyCam.setTarget(solarSystem.bodies[5].getPosition());
+        }
     }
     
     if (key == 'd'){

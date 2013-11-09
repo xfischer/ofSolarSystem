@@ -30,7 +30,7 @@ ofSolarSystem::ofSolarSystem(){
     bodies.push_back( ofCelestialBody("Mars", 3389.5, 227943824, 25.2,  1.026, "mars.jpg" ));
     bodies.push_back( ofCelestialBody("Jupiter", 69911, 778340821, 3.1,  0.41354, "jupiter.jpg" ));
     
-    ofCelestialBody saturn = ofCelestialBody("Saturn", 58232, 1426666422, 26.7,  0.444, "saturnhidef.jpg" );
+    ofCelestialBody saturn = ofCelestialBody("Saturn", 58232, 1426666422, 26.7,  0.444, "saturn.jpg" );
     saturn.addRing(74500, 140000, "saturnringcolor.jpg", "saturnringpattern.gif");
     bodies.push_back( saturn );
     
@@ -76,7 +76,7 @@ void ofSolarSystem::update(){
                 sunRadius = bodies[i].extent;
             }
             else
-                dist = bodies[i].distance/2000. + sunRadius;
+                dist = bodies[i].distance + sunRadius;
             
             bodies[i].setPosition(ofVec3f(0, 0, -dist));
                 
