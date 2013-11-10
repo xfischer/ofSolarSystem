@@ -189,12 +189,12 @@ void testApp::keyPressed(int key){
     
     //---------------------------------------
     // tests
-    static int test = solarSystem.bodies.size();
+    static int test = 0;
     if (key == ' '){
         
         if (camIndex == 1){
             
-            ofCelestialBody currentBody = solarSystem.bodies[--test % solarSystem.bodies.size()];
+            ofCelestialBody currentBody = solarSystem.bodies[++test % solarSystem.bodies.size()];
             ofVec3f sphereLookAt;
             ofVec3f sphereTarget;
             
@@ -223,8 +223,6 @@ void testApp::keyPressed(int key){
             sphereCam.moveTo(sphereTarget, 5000);
             
             
-            
-            easyCam.setTarget(solarSystem.bodies[5].getPosition());
         }
     }
     

@@ -15,6 +15,10 @@ class ofCelestialBody {
     
 public: // place public functions or variables declarations here
     
+    // Constructors
+    ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName, string boundariesFileName);
+    ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName);
+    
     // methods, equivalent to specific functions of your class objects
     void update();  // update method, used to refresh your objects properties
     void draw(bool axis, bool textured, bool boundaries);    // draw method
@@ -34,8 +38,7 @@ public: // place public functions or variables declarations here
     
     void addRing(float startRadius, float endRadius, string ringTextureFile, string ringAlphaFile);
     
-    ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName, string boundariesFileName);
-    ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName);
+    
     
 private: // place private functions or variables declarations here
     

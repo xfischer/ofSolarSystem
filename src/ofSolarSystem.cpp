@@ -21,7 +21,7 @@
 
 ofSolarSystem::ofSolarSystem(){
 
-    ofCelestialBody sun = ofCelestialBody(	"Sun", 696342, 0, 0 /* 7.25 */, /* 25.38 */ 0, "sun.jpg" );
+    ofCelestialBody sun = ofCelestialBody(	"Sun", 696342, 0, 0 /* 7.25 */, 25.38, "sun.jpg" );
     bodies.push_back( sun );
 
     bodies.push_back( ofCelestialBody("Mercury", 2439.7, 57909227, 0,  58.646, "mercury.jpg" ));
