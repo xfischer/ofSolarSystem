@@ -7,18 +7,31 @@
  */
 
 #include "testApp.h"
-#define FAR_CLIP 778412020+71490
 
+void Params::setup() {
+    
+	farClip =  778412020+71490;
+    bodySpacing = 50;
+    radiusFactor = 100;
+    sphereResolution = 75;
+	
+}
 
 //--------------------------------------------------------------
 void testApp::setup(){
+    
     //ofEnableSmoothing();
 	//ofSetFrameRate(60);
     ofSetVerticalSync(true);
 	//ofEnableAlphaBlending();
     ofEnableDepthTest();
     //ofEnableAntiAliasing();
+
     
+    
+    param.setup();
+    solarSystem.setup();
+
     
     
     //GUI
@@ -30,9 +43,9 @@ void testApp::setup(){
     camIndex = 0;
     
     easyCam.setDistance(1000);
-    sphereCam.setFarClip(FAR_CLIP);
-    cam.setFarClip(FAR_CLIP);
-    easyCam.setFarClip(FAR_CLIP);
+    sphereCam.setFarClip(param.farClip);
+    cam.setFarClip(param.farClip);
+    easyCam.setFarClip(param.farClip);
     
     vFlip = true;
     easyCam.setVFlip(vFlip);
@@ -46,8 +59,9 @@ void testApp::setup(){
     //this slows down the rotate a little bit
 	dampen = .2;
     
-    
     solarSystem.mode = ofSolarSystem::SIZE;
+    
+    
     
 }
 
@@ -167,11 +181,11 @@ void testApp::keyPressed(int key){
     if (key =='c'){
         
         if (camIndex==0)
-            updateCams(easyCam.getPosition(), easyCam.getLookAtDir()*FAR_CLIP, easyCam.getOrientationQuat());
+            updateCams(easyCam.getPosition(), easyCam.getLookAtDir()*param.farClip, easyCam.getOrientationQuat());
         else if (camIndex==1)
             updateCams(sphereCam.movedTo, sphereCam.lookedAt, sphereCam.getOrientationQuat());
         else if (camIndex==2)
-            updateCams(cam.getPosition(), cam.getLookAtDir()*FAR_CLIP, cam.getOrientationQuat());
+            updateCams(cam.getPosition(), cam.getLookAtDir()*param.farClip, cam.getOrientationQuat());
         
         camIndex = (camIndex + 1) % 3;
             

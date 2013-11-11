@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxSphereCam.h"
 #include "ofSolarSystem.h"
+#include "rdParams.h"
 
 typedef struct {
 	string name;
@@ -70,3 +71,5 @@ private:
     void updateCams(ofVec3f position, ofVec3f lookat, ofQuaternion orientation);
     
 };
+
+

@@ -31,6 +31,7 @@ public:
     
     void distanceInPercentTo(float percent); // change planet distances using easing (ofxTween)
     
+    void setup();
     
 };
 

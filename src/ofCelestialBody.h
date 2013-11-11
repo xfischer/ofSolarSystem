@@ -16,17 +16,16 @@ class ofCelestialBody {
 public: // place public functions or variables declarations here
     
     // Constructors
-    ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName, string boundariesFileName);
-    ofCelestialBody(string name, double radius, double sunDistance, double inclination, double rotationPeriod, string textureFileName);
+    ofCelestialBody(string name, double radius, double orbitDistance, double inclination, double rotationPeriod, string textureFileName, string boundariesFileName);
+    ofCelestialBody(string name, double radius, double orbitDistance, double inclination, double rotationPeriod, string textureFileName);
     
     // methods, equivalent to specific functions of your class objects
-    void update();  // update method, used to refresh your objects properties
     void draw(bool axis, bool textured, bool boundaries);    // draw method
     // variables
     
     double extent;
     double radius;
-    double distance; // distance from Sun
+    double distance; // orbital distance
     double inclination; // orbit to equator inclination
     double rotationPeriod; // rotation period in Earth days
     string name;
@@ -34,10 +33,12 @@ public: // place public functions or variables declarations here
     void setPosition(const ofVec3f& position);
     ofVec3f& getPosition();
     
+    vector<ofCelestialBody> moons;
+    
     ofSpherePrimitive sphere;
     
     void addRing(float startRadius, float endRadius, string ringTextureFile, string ringAlphaFile);
-    
+    void addMoon(ofCelestialBody &body); 
     
     
 private: // place private functions or variables declarations here
@@ -56,8 +57,7 @@ private: // place private functions or variables declarations here
     
     ofImage texture;
     ofImage ringTexture;
-
-    
+        
     void loadSegments( vector< vector<ofPoint> > &segments, string _file);
     void addToMesh( vector< vector<ofPoint> > &boundaries , ofFloatColor _color );
 
