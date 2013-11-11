@@ -221,18 +221,17 @@ void ofCelestialBody::setupRingMesh(float startRadius, float endRadius){
     ofVec3f radOut = ofVec3f(0,0,endRadius);
     
     ofQuaternion rot;
-    int numSegments = 180;
     
-    for (int x = 0; x <=numSegments; x+=1) {
+    for (int x = 0; x <=360; x+=1) {
         
-        rot.makeRotate(x*360/numSegments, 0, 1, 0);
+        rot.makeRotate(x, 0, 1, 0);
         
         
         ringMesh.addVertex(rot * radOut);
-        ringMesh.addTexCoord( ofPoint(0, (x*h)/numSegments));
+        ringMesh.addTexCoord( ofPoint(0, (x*h)/360));
         
         ringMesh.addVertex(rot * radIn);
-        ringMesh.addTexCoord( ofPoint(w, (x*h)/numSegments));
+        ringMesh.addTexCoord( ofPoint(w, (x*h)/360));
 		
     }
 }
@@ -278,16 +277,10 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
         //sphere.drawNormals(20,false);
         texture.getTextureReference().unbind();
         
-
+        
         if (ringMesh.getNumVertices()>0)
         {
-            GLfloat fLargest;
-            
-            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
             ringTexture.getTextureReference().bind();
-            
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16);
-
             ringMesh.draw();
             ringTexture.getTextureReference().unbind();
         }
