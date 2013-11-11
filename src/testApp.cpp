@@ -39,7 +39,7 @@ void testApp::setup(){
     sphereCam.setVFlip(vFlip);
     cam.setVFlip(vFlip);
     
-    ofVec3f camPos = ofVec3f(10000, 0, -10000);
+    ofVec3f camPos = ofVec3f(-10000, 0, -10000);
     easyCam.setPosition(camPos);
     easyCam.setTarget(ofVec3f(0,0,-10000));
     
@@ -182,7 +182,7 @@ void testApp::keyPressed(int key){
         }
     }
     if (key == 'r')
-        updateCams(ofVec3f(4527.78, -143.096, -8868.1), ofVec3f(0), ofQuaternion(120,ofVec3f(0,1,0)));
+        updateCams(ofVec3f(4527.78, -143.096, 8868.1), ofVec3f(0), ofQuaternion(120,ofVec3f(0,1,0)));
     if (key == 'h')
         bShowHelp = !bShowHelp;
     
@@ -203,7 +203,7 @@ void testApp::keyPressed(int key){
                 // view planet by planet faced to planet along x axis
                 sphereLookAt = currentBody.getPosition();
                 sphereTarget = sphereLookAt;
-                sphereTarget.x += currentBody.radius * 2.5;
+                sphereTarget.x -= currentBody.radius * 2.5;
                 sphereTarget.y -= currentBody.radius * 1;
             
             }
@@ -219,8 +219,8 @@ void testApp::keyPressed(int key){
                 
             }
             
-            sphereCam.lookAtTo(sphereLookAt, 5000);
-            sphereCam.moveTo(sphereTarget, 5000);
+            sphereCam.lookAtTo(sphereLookAt, 1000);
+            sphereCam.moveTo(sphereTarget, 1000);
             
             
         }

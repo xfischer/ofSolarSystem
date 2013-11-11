@@ -263,7 +263,7 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
 //
 //    ofPopMatrix();
     
-    ofRotate(inclination, 0, 0, 1);
+    ofRotate(inclination, 1, 0, 0);
     
     ofRotate(ofGetElapsedTimeMillis()/rotationPeriod*0.002, 0, 1, 0);
 

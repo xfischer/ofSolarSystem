@@ -21,11 +21,11 @@
 
 ofSolarSystem::ofSolarSystem(){
 
-    ofCelestialBody sun = ofCelestialBody(	"Sun", 696342, 0, 0 /* 7.25 */, 25.38, "sun.jpg" );
+    ofCelestialBody sun = ofCelestialBody(	"Sun", 696342, 0, 0 /* 7.25 */, 25.38, "th_sun.png" );
     bodies.push_back( sun );
 
     bodies.push_back( ofCelestialBody("Mercury", 2439.7, 57909227, 0,  58.646, "mercury.jpg" ));
-    bodies.push_back( ofCelestialBody("Venus", 6051.8, 108209475, -2.7 ,  -243.018, "venus.jpg" ));
+    bodies.push_back( ofCelestialBody("Venus", 6051.8, 108209475, -2.7 ,  -243.018, "venusclouds.jpg" ));
     bodies.push_back( ofCelestialBody("Earth", 6371.00, 149598262, 23.4393,  0.99726968, "earth.jpg", BOUNDARIES_FILE ));
     bodies.push_back( ofCelestialBody("Mars", 3389.5, 227943824, 25.2,  1.026, "mars.jpg" ));
     bodies.push_back( ofCelestialBody("Jupiter", 69911, 778340821, 3.1,  0.41354, "jupiter.jpg" ));
