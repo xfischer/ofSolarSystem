@@ -10,7 +10,6 @@
 #define FAR_CLIP 778412020+71490
 
 
-
 //--------------------------------------------------------------
 void testApp::setup(){
     //ofEnableSmoothing();
@@ -65,6 +64,7 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
+
 	ofBackground(0);
     
     ofPushMatrix();
@@ -92,8 +92,6 @@ void testApp::draw(){
     
     ofPopMatrix();
     drawHelp();
-    
-    
     
 }
 
@@ -194,11 +192,14 @@ void testApp::keyPressed(int key){
     static int test = 0;
     if (key == ' '){
         
-        ofVec3f sphereTarget = solarSystem.bodies[++test % solarSystem.bodies.size()].getPosition();
-                cout<< sphereTarget << endl;
-        cout<< test << endl;
+        if (camIndex == 1){
+            
+            ofCelestialBody currentBody = solarSystem.bodies[++test % solarSystem.bodies.size()];
+            ofVec3f sphereLookAt;
+            ofVec3f sphereTarget;
+            
+            if (solarSystem.mode == ofSolarSystem::SIZE){
         
-<<<<<<< HEAD
                 // view planet by planet faced to planet along x axis
                 sphereLookAt = currentBody.getPosition();
                 sphereTarget = sphereLookAt;
@@ -223,11 +224,6 @@ void testApp::keyPressed(int key){
             
             
         }
-=======
-        sphereCam.lookAtTo(sphereTarget, 500);
-        
-        easyCam.setTarget(solarSystem.bodies[5].getPosition());
->>>>>>> b743e31ae95ad3746284390f2febd10a38eeb33f
     }
     
     if (key == 'd'){

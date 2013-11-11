@@ -249,21 +249,23 @@ void ofCelestialBody::update(){
 
 void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundaries){
     
+    ofSetColor(255);
+    
     ofPushMatrix();
     
     ofTranslate(position);
     
-    ofPushMatrix();
-    
-    ofSetColor(255);
-    ofTranslate(0,-radius*1.5,0);
-    ofDrawBitmapString(name, 0, 0);
-
-    ofPopMatrix();
+//    ofPushMatrix();
+//    
+//    // draw planet name
+//    ofTranslate(0,-radius*1.5,0);
+//    ofDrawBitmapString(name, 0, 0);
+//
+//    ofPopMatrix();
     
     ofRotate(inclination, 1, 0, 0);
     
-    ofRotate(ofGetElapsedTimeMillis()*rotationPeriod*0.0002, 0, 1, 0);
+    ofRotate(ofGetElapsedTimeMillis()/rotationPeriod*0.002, 0, 1, 0);
 
 	if (bDrawAxis){
 		ofDrawAxis(radius);
@@ -280,6 +282,7 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
         
         if (ringMesh.getNumVertices()>0)
         {
+            //rd3DUtils::setNormals(ringMesh);
             ringTexture.getTextureReference().bind();
             ringMesh.draw();
             ringTexture.getTextureReference().unbind();
