@@ -203,8 +203,9 @@ void testApp::keyPressed(int key){
                 // view planet by planet faced to planet along x axis
                 sphereLookAt = currentBody.getPosition();
                 sphereTarget = sphereLookAt;
-                sphereTarget.x -= currentBody.radius * 2.5;
-                sphereTarget.y -= currentBody.radius * 1;
+                sphereTarget.x -= currentBody.radius * 3;
+                sphereTarget.y -= currentBody.extent * 1;
+                sphereTarget.z -= currentBody.radius;
             
             }
             
@@ -213,14 +214,14 @@ void testApp::keyPressed(int key){
                 sphereLookAt = solarSystem.bodies[0].getPosition();
                 
                 sphereTarget = currentBody.getPosition();
-                sphereTarget.z -= currentBody.radius * 10.;
-                sphereTarget.y -= currentBody.radius * 2.;
+                sphereTarget.z -= currentBody.extent * 10.;
+                sphereTarget.y -= currentBody.extent * 2.;
 
                 
             }
             
             sphereCam.lookAtTo(sphereLookAt, 1000);
-            sphereCam.moveTo(sphereTarget, 1000);
+            sphereCam.moveTo(sphereTarget, 5000);
             
             
         }
