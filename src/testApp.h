@@ -63,9 +63,6 @@ private:
     //a place to store the mouse position so we can measure incremental change
     ofVec2f lastMouse;
 	
-	//slows down the rotation 1 = 1 degree per pixel
-	float dampen;
-    
     bool vFlip;
     
     void updateCams(ofVec3f position, ofVec3f lookat, ofQuaternion orientation);

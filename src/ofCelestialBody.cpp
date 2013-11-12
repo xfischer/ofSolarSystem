@@ -22,7 +22,7 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _orbitDist
     rotationPeriod = _rotationPeriod;
     
     
-    texture.loadImage("textures/" + textureFileName);
+    texture.loadImage(param.texturePath + textureFileName);
     
     setup();
     
@@ -42,7 +42,7 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _orbitDist
     inclination = _inclination;
     rotationPeriod = _rotationPeriod;
     
-    texture.loadImage("textures/" + textureFileName);
+    texture.loadImage(param.texturePath + textureFileName);
     
     setup();
     
@@ -62,7 +62,7 @@ void ofCelestialBody::setup(){
 //--------------------------------------------------------------
 void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTextureFile, string ringAlphaFile){
     
-    ringTexture = rd3DUtils::combineColorAlpha("textures/" + ringTextureFile, "textures/" + ringAlphaFile);
+    ringTexture = rd3DUtils::combineColorAlpha(param.texturePath + ringTextureFile, param.texturePath + ringAlphaFile);
     
 	setupRingMesh(startRadius, endRadius);
 }

@@ -14,7 +14,8 @@ void Params::setup() {
     bodySpacing = 50;
     radiusFactor = 100;
     sphereResolution = 75;
-	
+    dampen = .2;
+    texturePath = "textures/lowres/";
 }
 
 //--------------------------------------------------------------
@@ -32,7 +33,7 @@ void testApp::setup(){
     param.setup();
     solarSystem.setup();
 
-    
+    cout<<"Init time: "<<ofGetElapsedTimeMillis()<<endl;
     
     //GUI
     bShowHelp = false;
@@ -57,7 +58,7 @@ void testApp::setup(){
     easyCam.setTarget(ofVec3f(0,0,-10000));
     
     //this slows down the rotate a little bit
-	dampen = .2;
+	param.dampen = .2;
     
     solarSystem.mode = ofSolarSystem::SIZE;
     
@@ -262,24 +263,24 @@ void testApp::mouseMoved(int x, int y ){
 void testApp::mouseDragged(int x, int y, int button){
     //every time the mouse is dragged, track the change
 	//accumulate the changes inside of curRot through multiplication
-    //cam.tilt((lastMouse.y-y)*dampen);
-    //cam.pan((lastMouse.x-x)*dampen);
+    //cam.tilt((lastMouse.y-y)*param.dampen);
+    //cam.pan((lastMouse.x-x)*param.dampen);
     
     if (camIndex == 2) {
         ofVec2f mouse(x,y);
         if (button == OF_MOUSE_BUTTON_MIDDLE){
             // move left/up
-            cam.truck((lastMouse.x-x)/dampen);
-            cam.boom((lastMouse.y-y)/dampen);
+            cam.truck((lastMouse.x-x)/param.dampen);
+            cam.boom((lastMouse.y-y)/param.dampen);
         }
         else if (button == OF_MOUSE_BUTTON_RIGHT){
             //move forward/backwards
-            cam.dolly((y-lastMouse.y)/dampen);
+            cam.dolly((y-lastMouse.y)/param.dampen);
         }
         else if (button == OF_MOUSE_BUTTON_LEFT){
             // rotate
-            ofQuaternion yRot((y-lastMouse.y)*dampen, cam.getXAxis());
-            ofQuaternion xRot((lastMouse.x-x)*dampen, cam.getYAxis());
+            ofQuaternion yRot((y-lastMouse.y)*param.dampen, cam.getXAxis());
+            ofQuaternion xRot((lastMouse.x-x)*param.dampen, cam.getYAxis());
             curRot = yRot*xRot;
             cam.rotate(curRot);
         }

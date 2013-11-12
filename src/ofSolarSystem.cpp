@@ -20,7 +20,8 @@ ofSolarSystem::ofSolarSystem(){
 }
 
 void ofSolarSystem::setup(){
-
+    
+    
     // -----------------------------------------------------
     // Moons
     
@@ -96,6 +97,8 @@ void ofSolarSystem::setup(){
     ofCelestialBody neptune = ofCelestialBody("Neptune", 24622, 4498396441, 28.3,  0.671, "neptune.jpg" );
         neptune.addMoon(triton);
     bodies.push_back( neptune);
+    
+    
     
 }
 
