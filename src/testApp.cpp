@@ -11,11 +11,14 @@
 void Params::setup() {
     
 	farClip =  778412020+71490;
-    bodySpacing = 50;
+    bodySpacing = 75;
     radiusFactor = 100;
+    distanceFactor = 100;
     sphereResolution = 75;
     dampen = .2;
     texturePath = "textures/lowres/";
+    showMoons = true;
+    sphereCamCycleMoons = true;
 }
 
 //--------------------------------------------------------------
@@ -204,40 +207,73 @@ void testApp::keyPressed(int key){
     
     //---------------------------------------
     // tests
-    static int test = 0;
+    static int bodyIndex = 0;
+    static int moonIndex = -1;
+    static int numMoons = 0;
+    
+    ofVec3f bodyPos;
+    double bodyExtent;
+    double bodyRadius;
+    
+    
     if (key == ' '){
         
         if (camIndex == 1){
             
-            ofCelestialBody currentBody = solarSystem.bodies[++test % solarSystem.bodies.size()];
+            ofCelestialBody currentBody = solarSystem.bodies[bodyIndex];
+            numMoons = currentBody.moons.size();
+            
+            bodyPos = currentBody.getPosition();
+            bodyExtent = currentBody.extent;
+            bodyRadius = currentBody.radius;
+            
+            if (moonIndex>=0){
+                ofQuaternion qat;
+                qat.makeRotate(currentBody.inclination, ofVec3f(1, 0, 0));
+                bodyPos += currentBody.moons[moonIndex].getPosition()*qat;
+                bodyExtent = currentBody.moons[moonIndex].extent;
+                bodyRadius = currentBody.moons[moonIndex].radius;
+                
+            }
+           
+            
             ofVec3f sphereLookAt;
             ofVec3f sphereTarget;
             
             if (solarSystem.mode == ofSolarSystem::SIZE){
         
                 // view planet by planet faced to planet along x axis
-                sphereLookAt = currentBody.getPosition();
+                sphereLookAt = bodyPos;
                 sphereTarget = sphereLookAt;
-                sphereTarget.x -= currentBody.radius * 3;
-                sphereTarget.y -= currentBody.extent * 1;
-                sphereTarget.z -= currentBody.radius;
+                sphereTarget.x -= bodyRadius * 6; //3;
+                sphereTarget.y -= bodyExtent * 1;
+                sphereTarget.z -= bodyRadius;
             
             }
             
             if (solarSystem.mode == ofSolarSystem::DISTANCE){
                 
-                sphereLookAt = solarSystem.bodies[0].getPosition();
+                if (moonIndex>=0)
+                    sphereLookAt = currentBody.getPosition();
+                else
+                    sphereLookAt = solarSystem.bodies[0].getPosition();
                 
-                sphereTarget = currentBody.getPosition();
-                sphereTarget.z -= currentBody.extent * 10.;
-                sphereTarget.y -= currentBody.extent * 2.;
+                sphereTarget = bodyPos;
+                sphereTarget.z -= bodyExtent * 10.;
+                sphereTarget.y -= bodyExtent * 2.;
 
                 
             }
             
             sphereCam.lookAtTo(sphereLookAt, 1000);
-            sphereCam.moveTo(sphereTarget, 5000);
+            sphereCam.moveTo(sphereTarget, 4000);
             
+            if (moonIndex == numMoons-1 || numMoons == 0){
+                moonIndex = -1; // reset moon counter
+                bodyIndex = (bodyIndex + 1) % solarSystem.bodies.size();
+            }
+            else
+                moonIndex++; // increase moon counter
             
         }
     }

@@ -21,6 +21,7 @@ ofSolarSystem::ofSolarSystem(){
 
 void ofSolarSystem::setup(){
     
+    param.showMoons = true;
     
     // -----------------------------------------------------
     // Moons
@@ -35,20 +36,20 @@ void ofSolarSystem::setup(){
     ofCelestialBody callisto = ofCelestialBody("Callisto", 2410.3, 1882700, 0.192, 16.6890184, "callisto.jpg");
     
     // Saturn
-    ofCelestialBody titan       = ofCelestialBody("Titan", 2574.7, 1221865, 0.312, 0.1, "titan.jpg");
-    ofCelestialBody dione       = ofCelestialBody("Dione", 561.7, 377415, 0.028, 0.1, "dione.jpg");
-    ofCelestialBody tethys      = ofCelestialBody("Tethys", 533, 294672, 1.091, 0.1, "tethys.jpg");
     ofCelestialBody enceladus   = ofCelestialBody("Enceladus", 252.1, 238037, 0.009, 0.1, "enceladus.jpg");
-    ofCelestialBody iapetus     = ofCelestialBody("Iapetus", 735.6, 3560851, 8.313, 0.1, "iapetus.jpg");
+    ofCelestialBody tethys      = ofCelestialBody("Tethys", 533, 294672, 1.091, 0.1, "tethys.jpg");
+    ofCelestialBody dione       = ofCelestialBody("Dione", 561.7, 377415, 0.028, 0.1, "dione.jpg");
     ofCelestialBody rhea        = ofCelestialBody("Rhea", 764.3, 527068, 0.333, 0.1, "rhea.jpg");
-   
+    ofCelestialBody titan       = ofCelestialBody("Titan", 2574.7, 1221865, 0.312, 0.1, "titan.jpg");
+    ofCelestialBody iapetus     = ofCelestialBody("Iapetus", 735.6, 3560851, 8.313, 0.1, "iapetus.jpg");
+    
     // Uranus
-    ofCelestialBody oberon  = ofCelestialBody("Oberon", 761.4, 583500, 0.068, 0.1, "oberon.jpg");
-    ofCelestialBody titania = ofCelestialBody("Titania", 788.9, 436300, 0.079, 0.1, "titania.jpg");
+    ofCelestialBody miranda = ofCelestialBody("Miranda", 235.8, 129900, 4.338, 0.1, "miranda.jpg");
     ofCelestialBody ariel   = ofCelestialBody("Ariel", 578.9, 190900, 0.041, 0.1, "ariel.jpg");
     ofCelestialBody umbriel = ofCelestialBody("Umbriel", 584.7, 266000, 0.128, 0.1, "umbriel.jpg");
-    ofCelestialBody miranda = ofCelestialBody("Miranda", 235.8, 129900, 4.338, 0.1, "miranda.jpg");
-
+    ofCelestialBody titania = ofCelestialBody("Titania", 788.9, 436300, 0.079, 0.1, "titania.jpg");
+    ofCelestialBody oberon  = ofCelestialBody("Oberon", 761.4, 583500, 0.068, 0.1, "oberon.jpg");
+    
     // Neptune
     ofCelestialBody triton = ofCelestialBody("Triton", 1353.4, 354759, 156.865, 0.1, "triton.jpg");
     
@@ -77,21 +78,22 @@ void ofSolarSystem::setup(){
     
     ofCelestialBody saturn = ofCelestialBody("Saturn", 58232, 1426666422, 26.7,  0.444, "saturn.jpg" );
     saturn.addRing(74500, 140000, "saturnringcolor.jpg", "saturnringpattern.gif");
-        saturn.addMoon(titan);
-        saturn.addMoon(dione);
-        saturn.addMoon(tethys);
         saturn.addMoon(enceladus);
-        saturn.addMoon(iapetus);
+        saturn.addMoon(tethys);
+        saturn.addMoon(dione);
         saturn.addMoon(rhea);
+        saturn.addMoon(titan);
+        saturn.addMoon(iapetus);
     bodies.push_back( saturn );
     
     ofCelestialBody uranus = ofCelestialBody("Uranus", 25362, 2870658186, -97.8 ,  -0.718, "uranus.jpg" );
-    uranus.addRing(38000, 51140, "uranusringcolor.jpg", "uranusringtrans.gif");
-        uranus.addMoon(oberon);
-        uranus.addMoon(titania);
-        uranus.addMoon(ariel);
-        uranus.addMoon(umbriel);
+        uranus.addRing(38000, 51140, "uranusringcolor.jpg", "uranusringtrans.gif");
         uranus.addMoon(miranda);
+    	uranus.addMoon(ariel);
+        uranus.addMoon(umbriel);
+        uranus.addMoon(titania);
+        uranus.addMoon(oberon);
+    
     bodies.push_back( uranus );
     
     ofCelestialBody neptune = ofCelestialBody("Neptune", 24622, 4498396441, 28.3,  0.671, "neptune.jpg" );
@@ -119,8 +121,6 @@ void ofSolarSystem::update(){
             if (dist > 0)
                 dist += bodies[i].extent + param.bodySpacing;
             
-            bodies[i].setPosition(ofVec3f(0, 0, -dist));
-            
             // Moons
             double moonDist = 0;
             if (bodies[i].moons.size() > 0){
@@ -128,12 +128,18 @@ void ofSolarSystem::update(){
                 moonDist = bodies[i].extent;
                 for(int j = 0; j < bodies[i].moons.size(); j++ ){
 
-                    moonDist += bodies[i].moons[j].extent + param.bodySpacing;
+                    moonDist += bodies[i].moons[j].radius + param.bodySpacing;
                     
                     bodies[i].moons[j].setPosition(ofVec3f(0, 0, -moonDist));
                     
                 }
+                
+                dist += moonDist - bodies[i].extent/2;
+
             }
+            
+            
+            bodies[i].setPosition(ofVec3f(0, 0, -dist));
             
             dist += moonDist + bodies[i].extent + param.bodySpacing;
             
@@ -147,21 +153,31 @@ void ofSolarSystem::update(){
         
         
         //-----------------------------------------------------------------
-        // put bodies with real relative distances from Sun
+        // put bodies with real relative distances from Sun's surface
         double dist;
         double sunRadius;
+        float factor = param.radiusFactor == param.distanceFactor ? 0 : 1;
         
         for(int i = 0; i < bodies.size(); i++){
+
             
             if (i == 0){
                 dist = 0;
                 sunRadius = bodies[i].extent;
             }
-            else
-                dist = bodies[i].distance + sunRadius;
+            else{
+                dist = bodies[i].distance + factor*sunRadius;
+            }
             
             bodies[i].setPosition(ofVec3f(0, 0, -dist));
+            for(int j = 0; j < bodies[i].moons.size(); j++ ){
                 
+                float moonDist = bodies[i].moons[j].distance + factor*bodies[i].radius;
+                bodies[i].moons[j].setPosition(ofVec3f(0, 0, -moonDist));
+                
+            }
+
+            
         }
     }
    

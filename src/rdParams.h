@@ -20,12 +20,16 @@ public:
 	double farClip;
     float bodySpacing;
     float radiusFactor;     // 100
+    float distanceFactor;   // = radiusFactor
     float sphereResolution; // 75
 
     //slows down the rotation 1 = 1 degree per pixel
 	float dampen;
     
     string texturePath;      // texture path and quality "textures/lowres/", "textures/medres/", "textures/hires/"
+    
+    bool showMoons;
+    bool sphereCamCycleMoons;   // if true, sphereCam will stop on each moon
     
 };
 

@@ -17,7 +17,7 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _orbitDist
     name = _name;
     radius = _radius/param.radiusFactor;
     extent = radius;
-    distance = _orbitDistance/param.radiusFactor;
+    distance = _orbitDistance/param.distanceFactor;
     inclination = _inclination;
     rotationPeriod = _rotationPeriod;
     
@@ -38,7 +38,7 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _orbitDist
     name = _name;
     radius = _radius/param.radiusFactor;
     extent = radius;
-    distance = _orbitDistance/param.radiusFactor;
+    distance = _orbitDistance/param.distanceFactor;
     inclination = _inclination;
     rotationPeriod = _rotationPeriod;
     
@@ -70,7 +70,8 @@ void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTex
 //--------------------------------------------------------------
 void ofCelestialBody::addMoon(ofCelestialBody &moon){
     
-    moons.push_back(moon);
+    if (param.showMoons)
+        moons.push_back(moon);
     //extent += moon.radius + param.bodySpacing;
 }
 
