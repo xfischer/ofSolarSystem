@@ -278,6 +278,11 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
     
     ofRotate(inclination, 1, 0, 0);
     
+    // Moons
+    for(int i = 0; i < moons.size(); i++){
+        moons[i].draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
+    }
+    
     ofRotate(ofGetElapsedTimeMillis()/rotationPeriod*0.002, 0, 1, 0);
 
 	if (bDrawAxis){
@@ -315,13 +320,6 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
         //sphere.drawWireframe();
 
     }
-    
-    
-    // Moons
-    for(int i = 0; i < moons.size(); i++){
-        moons[i].draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
-    }
-    
 
     if (boundariesMesh.getNumVertices()>0 && bDrawBoundaries)
         boundariesMesh.draw();
@@ -332,6 +330,6 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
     //ofSetColor(64);
     ofSetColor(255, 255, 255, 64);
     orbitMesh.draw();
-    
+    ofSetColor(255);
     
 }
