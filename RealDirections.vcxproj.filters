@@ -7,9 +7,6 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\3DUtils.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\ofCelestialBody.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -58,6 +55,12 @@
     <ClCompile Include="src\ofSolarSystem.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\rdParams.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rd3DUtils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -84,9 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\testApp.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\3DUtils.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ofCelestialBody.h">
@@ -135,6 +135,12 @@
       <Filter>addons\ofxSphereCam\src</Filter>
     </ClInclude>
     <ClInclude Include="src\ofSolarSystem.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rdParams.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rd3DUtils.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

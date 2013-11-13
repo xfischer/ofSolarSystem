@@ -104,10 +104,11 @@
     <ClCompile Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingQuint.cpp" />
     <ClCompile Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingSine.cpp" />
     <ClCompile Include="..\..\..\addons\ofxTween\src\ofxTween.cpp" />
-    <ClCompile Include="src\3DUtils.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofCelestialBody.cpp" />
     <ClCompile Include="src\ofSolarSystem.cpp" />
+    <ClCompile Include="src\rd3DUtils.cpp" />
+    <ClCompile Include="src\rdParams.cpp" />
     <ClCompile Include="src\testApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +126,10 @@
     <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingQuint.h" />
     <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingSine.h" />
     <ClInclude Include="..\..\..\addons\ofxTween\src\ofxTween.h" />
-    <ClInclude Include="src\3DUtils.h" />
     <ClInclude Include="src\ofCelestialBody.h" />
     <ClInclude Include="src\ofSolarSystem.h" />
+    <ClInclude Include="src\rd3DUtils.h" />
+    <ClInclude Include="src\rdParams.h" />
     <ClInclude Include="src\testApp.h" />
   </ItemGroup>
   <ItemGroup>
