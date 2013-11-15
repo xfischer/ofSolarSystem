@@ -68,7 +68,7 @@ void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTex
 }
 
 //--------------------------------------------------------------
-void ofCelestialBody::addMoon(ofCelestialBody &moon){
+void ofCelestialBody::addMoon(const ofCelestialBody &moon){
     
     if (param.showMoons)
         moons.push_back(moon);

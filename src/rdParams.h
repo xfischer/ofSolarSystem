@@ -19,8 +19,8 @@ public:
     
 	double farClip;
     float bodySpacing;
-    float radiusFactor;     // 100
-    float distanceFactor;   // = radiusFactor
+    double radiusFactor;     // 100
+    double distanceFactor;   // = radiusFactor
     float sphereResolution; // 75
 
     //slows down the rotation 1 = 1 degree per pixel

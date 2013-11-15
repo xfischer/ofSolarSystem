@@ -38,7 +38,7 @@ public: // place public functions or variables declarations here
     ofSpherePrimitive sphere;
     
     void addRing(float startRadius, float endRadius, string ringTextureFile, string ringAlphaFile);
-    void addMoon(ofCelestialBody &body); 
+    void addMoon(const 	ofCelestialBody &body);
     
     
 private: // place private functions or variables declarations here

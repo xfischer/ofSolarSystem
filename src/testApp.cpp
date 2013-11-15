@@ -11,11 +11,11 @@
 void Params::setup() {
     
 	farClip =  778412020+71490;
-    bodySpacing = 75;
-    radiusFactor = 100;
-    distanceFactor = 100;
+    bodySpacing = .075;
+    radiusFactor = 100000.;
+    distanceFactor = 100000.;
     sphereResolution = 75;
-    dampen = .2;
+    dampen = 0.001;
     texturePath = "textures/lowres/";
     showMoons = true;
     sphereCamCycleMoons = true;
@@ -56,12 +56,14 @@ void testApp::setup(){
     sphereCam.setVFlip(vFlip);
     cam.setVFlip(vFlip);
     
+    sphereCam.setNearClip(0.01);
+    easyCam.setNearClip(0.01);
+    cam.setNearClip(0.01);
+    
+    
     ofVec3f camPos = ofVec3f(-10000, 0, -10000);
     easyCam.setPosition(camPos);
     easyCam.setTarget(ofVec3f(0,0,-10000));
-    
-    //this slows down the rotate a little bit
-	param.dampen = .2;
     
     solarSystem.mode = ofSolarSystem::SIZE;
     
@@ -77,6 +79,7 @@ void testApp::update(){
     solarSystem.update();
     
     sphereCam.update();
+    
 
 }
 
@@ -243,11 +246,22 @@ void testApp::keyPressed(int key){
             if (solarSystem.mode == ofSolarSystem::SIZE){
         
                 // view planet by planet faced to planet along x axis
-                sphereLookAt = bodyPos;
-                sphereTarget = sphereLookAt;
-                sphereTarget.x -= bodyRadius * 6; //3;
-                sphereTarget.y -= bodyExtent * 1;
-                sphereTarget.z -= bodyRadius;
+                //sphereLookAt = bodyPos;
+                //                sphereTarget = bodyPos;
+                //                sphereTarget.x -= bodyRadius * 6; //3;
+                //                sphereTarget.y -= bodyExtent * 1;
+                //                sphereTarget.z -= bodyRadius;
+
+                
+                if (moonIndex>=0)
+                    sphereLookAt = currentBody.getPosition();
+                else
+                    sphereLookAt = solarSystem.bodies[0].getPosition();
+
+                sphereTarget = bodyPos;
+                sphereTarget.z -= bodyExtent * 10.;
+                sphereTarget.y -= bodyExtent * 2.;
+                
             
             }
             
@@ -265,8 +279,10 @@ void testApp::keyPressed(int key){
                 
             }
             
-            sphereCam.lookAtTo(sphereLookAt, 1000);
-            sphereCam.moveTo(sphereTarget, 4000);
+            cout<<"sphereCam Pos= "<<sphereTarget<<endl;
+            cout<<"sphereCam lAt= "<<sphereLookAt<<endl;
+            sphereCam.lookAtTo(sphereLookAt, 500);
+            sphereCam.moveTo(sphereTarget, 2000);
             
             if (moonIndex == numMoons-1 || numMoons == 0){
                 moonIndex = -1; // reset moon counter
@@ -306,17 +322,17 @@ void testApp::mouseDragged(int x, int y, int button){
         ofVec2f mouse(x,y);
         if (button == OF_MOUSE_BUTTON_MIDDLE){
             // move left/up
-            cam.truck((lastMouse.x-x)/param.dampen);
-            cam.boom((lastMouse.y-y)/param.dampen);
+            cam.truck((lastMouse.x-x)*param.dampen);
+            cam.boom((lastMouse.y-y)*param.dampen);
         }
         else if (button == OF_MOUSE_BUTTON_RIGHT){
             //move forward/backwards
-            cam.dolly((y-lastMouse.y)/param.dampen);
+            cam.dolly((y-lastMouse.y)*param.dampen);
         }
         else if (button == OF_MOUSE_BUTTON_LEFT){
             // rotate
-            ofQuaternion yRot((y-lastMouse.y)*param.dampen, cam.getXAxis());
-            ofQuaternion xRot((lastMouse.x-x)*param.dampen, cam.getYAxis());
+            ofQuaternion yRot((y-lastMouse.y)*param.dampen*50, cam.getXAxis());
+            ofQuaternion xRot((lastMouse.x-x)*param.dampen*50, cam.getYAxis());
             curRot = yRot*xRot;
             cam.rotate(curRot);
         }
