@@ -1,0 +1,9 @@
+—————————————————————————————
+TEXTURES
+—————————————————————————————
+
+All textures were downloaded from http://planetpixelemporium.com
+except :
+saturnhidef.jpg : http://www.mmedia.is/~bjj/
+venusclouds.jpg	: http://www.celestiamotherlode.net/catalog/venus.php
+moons : http://celestia.freedoors.org

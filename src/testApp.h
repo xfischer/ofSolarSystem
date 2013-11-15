@@ -1,13 +1,16 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxGui.h"
+#include "ofxSphereCam.h"
+#include "ofSolarSystem.h"
+#include "rdParams.h"
 
 typedef struct {
 	string name;
 	float latitude;
 	float longitude;
 } City;
+
 
 class testApp : public ofBaseApp{
     
@@ -29,32 +32,41 @@ public:
     
 private:
 	vector<City> cities;
-    
-	void loadSegments( vector< vector<ofPoint> > &segments, string _file);
-	void addToMesh( vector< vector<ofPoint> > &segments , ofFloatColor _color );
+    	
 	vector< vector<ofPoint> > boundaries;
     
-	ofMesh mesh;
-    ofVboMesh graticules;
+    ofSolarSystem solarSystem;
     
-	ofCamera cam;
+	ofxSphereCam sphereCam;
     ofEasyCam easyCam;
-    ofVec3f camTarget;
+    ofCamera cam;
     
-	float radius;
+	bool bDrawAxis;
+    bool bDrawTextured;
     
-    bool bDrawAxis;
-    bool bDrawGraticules;
     bool bDrawBoundaries;
     int camIndex;
     bool bShiftDown;
-    bool bCtrlDown;
     
     // GUI
     bool bShowHelp;
     
     void drawHelp();
     
-    void setupGraticules();
+    
+    // --------------------------------------------------
+    // Code from quaternionArcBall example
+
+    //current state of the rotation
+    ofQuaternion curRot;
+	
+    //a place to store the mouse position so we can measure incremental change
+    ofVec2f lastMouse;
+	
+    bool vFlip;
+    
+    void updateCams(ofVec3f position, ofVec3f lookat, ofQuaternion orientation);
     
 };
+
+

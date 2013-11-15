@@ -7,104 +7,39 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "src/testApp.cpp"
-         timestampString = "403912303.973876"
+         filePath = "src/ofCelestialBody.cpp"
+         timestampString = "404341399.48483"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "165"
-         endingLineNumber = "165"
-         landmarkName = "testApp::drawHelp()"
+         startingLineNumber = "22"
+         endingLineNumber = "22"
+         landmarkName = "ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, double _inclination, double _rotationPeriod)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "src/testApp.cpp"
-         timestampString = "403993128.066448"
+         filePath = "src/ofCelestialBody.cpp"
+         timestampString = "404341399.48483"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "258"
-         endingLineNumber = "258"
-         landmarkName = "testApp::addToMesh( vector&lt; vector&lt;ofPoint&gt; &gt; &amp; segments, ofFloatColor _color )"
+         startingLineNumber = "33"
+         endingLineNumber = "33"
+         landmarkName = "ofCelestialBody::ofCelestialBody(string _name, double _radius, double _sunDistance, double _inclination, double _rotationPeriod, vector&lt; vector&lt;ofPoint&gt; &gt; &amp;boundaries)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "No"
+         shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "src/testApp.cpp"
-         timestampString = "403993128.066448"
+         filePath = "../../../libs/openFrameworks/3d/ofMesh.cpp"
+         timestampString = "404867877.423772"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "205"
-         endingLineNumber = "205"
-         landmarkName = "testApp::loadSegments( vector&lt; vector&lt;ofPoint&gt; &gt; &amp;segments, string _file)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "src/testApp.cpp"
-         timestampString = "403993128.066448"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "224"
-         endingLineNumber = "224"
-         landmarkName = "testApp::loadSegments( vector&lt; vector&lt;ofPoint&gt; &gt; &amp;segments, string _file)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "src/testApp.cpp"
-         timestampString = "403993128.066448"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "225"
-         endingLineNumber = "225"
-         landmarkName = "testApp::loadSegments( vector&lt; vector&lt;ofPoint&gt; &gt; &amp;segments, string _file)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "src/testApp.cpp"
-         timestampString = "403995203.176426"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "430"
-         endingLineNumber = "430"
-         landmarkName = "testApp::mousePressed(int x, int y, int button)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "src/testApp.cpp"
-         timestampString = "403994209.195015"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "337"
-         endingLineNumber = "337"
-         landmarkName = "testApp::keyPressed(int key)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "src/testApp.cpp"
-         timestampString = "403994209.195015"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "341"
-         endingLineNumber = "341"
-         landmarkName = "testApp::keyPressed(int key)"
+         startingLineNumber = "689"
+         endingLineNumber = "689"
+         landmarkName = "ofMesh::draw(ofPolyRenderMode renderType)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

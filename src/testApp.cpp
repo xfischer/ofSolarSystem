@@ -8,426 +8,342 @@
 
 #include "testApp.h"
 
+void Params::setup() {
+    
+	farClip =  778412020+71490;
+    bodySpacing = .075;
+    radiusFactor = 100000.;
+    distanceFactor = 100000.;
+    sphereResolution = 75;
+    dampen = 0.001;
+    texturePath = "textures/lowres/";
+    showMoons = true;
+    sphereCamCycleMoons = true;
+}
+
 //--------------------------------------------------------------
 void testApp::setup(){
-    ofEnableSmoothing();
-	ofSetFrameRate(60);
+    
+    //ofEnableSmoothing();
+	//ofSetFrameRate(60);
+    ofSetVerticalSync(true);
 	//ofEnableAlphaBlending();
     ofEnableDepthTest();
-    ofSetSphereResolution(200);
-	//NoFill();
-	ofFill();
+    //ofEnableAntiAliasing();
+
     
-	radius = 300;
     
-	// create little objects for each city.
-	// A Lat/Lon like this:
-	// Lewiston, Idaho 	W 46 24' N 117 2'
-	// This translate to angles and degrees (1 degree = 1/60. of an angle)
-	// West and South are negative values
-    
-	// here is a list of big cities and their positions
-	// http://www.infoplease.com/ipa/A0001796.html
-    
-	
-    cities.push_back( (City){ "new york", 40+47/60., -73 + 58/60.}  );
-    cities.push_back( (City) { "aix-en-provence", 43.529, 5.443 });
-    /*
-     cities.push_back( (City){ "tokyo", 35 + 40./60, 139 + 45/60. } );
-     cities.push_back( (City) { "london", 51 + 32/60., -5./60. });
-	 cities.push_back( (City) { "shanghai", 31 + 10/60., 121 + 28/60. });
-	 cities.push_back( (City) { "buenos aires", -34 + 35/60., -58 + 22/60. });
-	 cities.push_back( (City) { "melbourne" , -37 + 47/60., 144 + 58/60. });
-	 cities.push_back( (City) { "detroit", 42 + 19/60., -83 + 2 / 60. });
-	 cities.push_back( (City) { "aix-en-provence", 43.529, 5.443 });
-    */
-    
-	mesh.setMode(OF_PRIMITIVE_LINES);
-	mesh.clear();
-    
-#ifdef __APPLE__
-	loadSegments( boundaries, "unix-boundaries-simple.txt" );
-#else
-    loadSegments( boundaries, "boundaries-simple.txt" );
-#endif
-	addToMesh( boundaries, ofFloatColor(1.0) /* ofColor::black */);
-    
-    setupGraticules();
+    param.setup();
+    solarSystem.setup();
+
+    cout<<"Init time: "<<ofGetElapsedTimeMillis()<<endl;
     
     //GUI
-    bShowHelp = true;
+    bShowHelp = false;
     
     bDrawAxis = false;
-    bDrawGraticules = true;
-    bDrawBoundaries = true;
+    bDrawTextured = true;
+    bDrawBoundaries = false;
     camIndex = 0;
     
-    cam.setPosition(0, 0, 1000);
-    camTarget = ofVec3f(0);
+    easyCam.setDistance(1000);
+    sphereCam.setFarClip(param.farClip);
+    cam.setFarClip(param.farClip);
+    easyCam.setFarClip(param.farClip);
+    
+    vFlip = true;
+    easyCam.setVFlip(vFlip);
+    sphereCam.setVFlip(vFlip);
+    cam.setVFlip(vFlip);
+    
+    sphereCam.setNearClip(0.01);
+    easyCam.setNearClip(0.01);
+    cam.setNearClip(0.01);
+    
+    
+    ofVec3f camPos = ofVec3f(-10000, 0, -10000);
+    easyCam.setPosition(camPos);
+    easyCam.setTarget(ofVec3f(0,0,-10000));
+    
+    solarSystem.mode = ofSolarSystem::SIZE;
+    
+    
     
 }
 
 
 //--------------------------------------------------------------
 void testApp::update(){
-	//ofSetWindowTitle(ofToString(ofGetFrameRate()));
+	ofSetWindowTitle(ofToString(ofGetFrameRate()));
+    
+    solarSystem.update();
+    
+    sphereCam.update();
+    
+
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
+
 	ofBackground(0);
     
     ofPushMatrix();
     
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    
-    if (camIndex == 0)
-        easyCam.begin();
-    else
-        cam.begin();
-        
-    
-	if (bDrawAxis){
-        
-		ofDrawAxis(radius);
-		
-		ofQuaternion latRot, longRot;
-        
-        // rotate along x and y axis and multiply by radius to place the point on the sphere
-        latRot.makeRotate(cities[1].latitude, -1, 0, 0);
-        longRot.makeRotate(cities[1].longitude, 0, 1, 0);
-        ofVec3f newOrigin = latRot * longRot * ofVec3f(0,0,radius);
-        
-        ofNode node = ofNode();
-        node.setPosition(newOrigin);
-        node.setOrientation(latRot * longRot);
-        node.draw();
-        
-        cam.draw();
-        
-//		if (camIndex == 1) {
-//            
-//			cam.setPosition(node.getPosition());
-//			cam.setOrientation(node.getOrientationQuat());
-//		}
-		
-	}
-    
-    
-    if (bDrawGraticules){
-        
-        //translate so that the center of the screen is 0,0
-        ofSetColor(64);
-        graticules.draw();
+
+    switch (camIndex) {
+        case 0:    easyCam.begin(); break;
+        case 1:    sphereCam.begin(); break;
+        case 2:    cam.begin(); break;
     }
     
-	ofSetColor(255);
-    //ofSetColor(ofColor::black);
-	for(unsigned int i = 0; i < cities.size(); i++){
-        
-		//three rotations
-		//two to represent the latitude and lontitude of the city
-		//a third so that it spins along with the spinning sphere
-		ofQuaternion latRot, longRot, spinQuat;
-		latRot.makeRotate(cities[i].latitude, -1, 0, 0);
-		longRot.makeRotate(cities[i].longitude, 0, 1, 0);
-		//spinQuat.makeRotate(ofGetFrameNum(), 0, 1, 0);
-        
-		//our starting point is 0,0, on the surface of our sphere, this is where the meridian and equator meet
-		ofVec3f center = ofVec3f(0,0,radius);
-		//multiplying a quat with another quat combines their rotations into one quat
-		//multiplying a quat to a vector applies the quat's rotation to that vector
-		//so to to generate our point on the sphere, multiply all of our quaternions together then multiple the centery by the combined rotation
-		ofVec3f worldPoint = latRot * longRot /* * spinQuat*/ * center;
-        
-		//draw it and label it
-		ofLine(ofVec3f(0), worldPoint);
-        
-		//set the bitmap text mode billboard so the points show up correctly in 3d
-		ofDrawBitmapString(cities[i].name, worldPoint );
+    solarSystem.draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
+    
+	if (bDrawAxis){
+        sphereCam.draw();
+        cam.draw();
 	}
     
-    if (bDrawBoundaries)
-        mesh.draw();
-    
-    if (camIndex == 0)
-        easyCam.end();
-    else
-        cam.end();
+    switch (camIndex) {
+        case 0: easyCam.end(); break;
+        case 1: sphereCam.end(); break;
+        case 2: cam.end(); break;
+    }
     
     ofPopMatrix();
-
     drawHelp();
     
 }
+
+void testApp::updateCams(ofVec3f position, ofVec3f lookat, ofQuaternion orientation){
+    
+    cam.setPosition(position);
+    easyCam.setPosition(position);
+    sphereCam.moveTo(position, 0);
+    
+    cam.lookAt(lookat);
+    easyCam.lookAt(lookat);
+    sphereCam.lookAtTo(lookat, 0);
+    
+    cam.setOrientation(orientation);
+    easyCam.setOrientation(orientation);
+    sphereCam.setOrientation(orientation);
+    
+}
+
 
 void testApp::drawHelp(){
     stringstream helpStream;
     
     ofSetColor(255);
     
+    helpStream << "h: " << (bShowHelp ? "hide" : "show") << " help";
+
 	if (bShowHelp) {
-        helpStream << "Showing help (press 'h' to toggle): " << (bShowHelp ? "YES" : "NO") << endl << endl;
-		helpStream << "1: draw axes :" << (bDrawAxis ? "YES" : "NO") << endl;
-		helpStream << "2: draw graticules :" << (bDrawGraticules ? "YES" : "NO") << endl;
-		helpStream << "3: draw boundaries :" << (bDrawBoundaries ? "YES" : "NO") << endl;
-        helpStream << "c: cycle cameras (current: ";
+        helpStream << endl;
+        helpStream << "1: draw axes: " << (bDrawAxis ? "YES" : "NO") << endl;
+		helpStream << "2: draw textures: " << (bDrawTextured ? "YES" : "NO") << endl;
+		helpStream << "3: draw boundaries: " << (bDrawBoundaries ? "YES" : "NO") << endl;
+        helpStream << "c: cycle cameras: ";
         switch (camIndex) {
             case 0:
                 helpStream << "ofEasyCam";
                 break;
             
             case 1:
-                helpStream << "freecam";
+                helpStream << "ofxSphereCam";
                 break;
                 
             case 2:
-                helpStream << "city freecam";
+                helpStream << "freecam";
                 break;
                 
-            default:
-                break;
         };
-        helpStream << ")" << endl;
-        helpStream << "move cameras with:" << endl
-                    << "  - left/right (x axis)" << endl
-                    << "  - up/down (y axis, +shift: z axis)" << endl
-                    << "  - ctrl key for rotation" << endl;
+        helpStream << endl;
+        helpStream << "move cameras with mouse:" << endl
+                    << "  - left button: rotate" << endl
+                    << "  - middle or m: xy translate" << endl
+                    << "  - right: z translate" << endl;
         helpStream << "r: reset cam" << endl;
-        helpStream << "f: toggle full screen" << endl;
+        helpStream << "f: toggle full screen";
     }
 	ofDrawBitmapStringHighlight(helpStream.str(), 10, 10);
     
 }
 
-void testApp::loadSegments( vector< vector<ofPoint> > &segments, string _file){
-    
-	ifstream fileIn;
-    
-	fileIn.open( ofToDataPath( _file ).c_str());
-	if(fileIn.is_open()) {
-        
-		int lineCount = 0;
-        
-		vector<ofPoint> newPoints;
-        
-		while(fileIn != NULL) {
-			string temp;
-			getline(fileIn, temp);
-            
-			// Skip empty lines.
-			if(temp.length() != 0) {
-                
-				vector<string> values = ofSplitString(temp, " ");
-                
-                if ( values[0] == "segment" || values[0].find("segment", 0) != -1){
-                    
-					if (lineCount != 0){
-						segments.push_back( newPoints );
-					}
-                    
-					newPoints.clear();
-				} else {
-					ofPoint newPoint = ofPoint();
-					newPoint.y = ofToFloat( values[0] );
-					newPoint.x = ofToFloat( values[1] );
-                    
-					newPoints.push_back(newPoint);
-				}
-                
-				lineCount++;
-			}
-		}
-        
-		if (lineCount != 0){
-			segments.push_back( newPoints );
-		}
-	}
-    
-}
-
-void testApp::addToMesh( vector< vector<ofPoint> > & segments, ofFloatColor _color ){
-	ofVec3f center = ofVec3f(0,0,300);
-    
-	for(int i = 0; i < segments.size(); i++){
-        
-		ofVec3f lastPoint;
-        
-		for (int j = 0; j < segments[i].size(); j++){
-            
-            ofQuaternion latRot, longRot;
-			latRot.makeRotate(segments[i][j].y, -1, 0, 0);
-			longRot.makeRotate(segments[i][j].x, 0, 1, 0);
-            
-			ofVec3f worldPoint = latRot * longRot * center;
-            
-			if ( j > 0 ){
-				mesh.addColor( _color );
-				mesh.addVertex(lastPoint);
-				mesh.addColor( _color );
-				mesh.addVertex(worldPoint);
-			}
-            
-			lastPoint = worldPoint;
-		}
-	}
-}
-
-//--------------------------------------------------------------
-void testApp::setupGraticules(){
-    
-    ofVec3f center = ofVec3f(0,0,300);
-    
-    graticules.setMode(OF_PRIMITIVE_LINES);
-    graticules.clear();
-    
-    ofQuaternion latRot, longRot;
-    
-    // meridians
-    for (int lon = 0; lon <=360; lon+=15) {
-        for (int lat = 90; lat <=90+360; lat+=1) {
-            
-			latRot.makeRotate(lat, -1, 0, 0);
-			longRot.makeRotate(lon, 0, 1, 0);
-            
-            graticules.addVertex(latRot * longRot * center);
-            
-            latRot.makeRotate(lat+1, -1, 0, 0);
-            graticules.addVertex(latRot * longRot * center);
-        }
-    }
-    
-    // parallels
-    for (int lat = 75; lat >=-75; lat-=15) {  // north to south
-        for (int lon = 0; lon <=360; lon+=1) {
-            
-			latRot.makeRotate(lat, -1, 0, 0);
-			longRot.makeRotate(lon, 0, 1, 0);
-            
-            graticules.addVertex(latRot * longRot * center);
-            
-            longRot.makeRotate(lon+1, 0, 1, 0);
-            graticules.addVertex(latRot * longRot * center);
-        }
-    }
-
-    /*
-    for (int lat = -75; lat <=75; lat+=15) {
-        for (int lon = -180; lon <=180; lon+=1) {
-            
-            ofQuaternion latRot, longRot;
-			latRot.makeRotate(lat, -1, 0, 0);
-			longRot.makeRotate(lon, 0, 1, 0);
-            
-			ofVec3f worldPoint = latRot * longRot * center;
-            
-            //graticules.addColor( color );
-            graticules.addVertex(worldPoint);
-        }
-    }
-     */
-
-    
-    
-}
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
-
-    if (key == OF_KEY_SHIFT){
-        easyCam.disableMouseInput();
-        bShiftDown = true;
-    }
-    if (key == OF_KEY_CONTROL)
-        bCtrlDown = true;
     
-    if (key == OF_KEY_UP){
-        if (bShiftDown)
-            cam.boom(10);
-        else if (bCtrlDown)
-            cam.tilt(1);
-        else
-            cam.dolly(-10);
-    }
-    if (key == OF_KEY_DOWN){
-        if (bShiftDown)
-            cam.boom(-10);
-        else if (bCtrlDown)
-            cam.tilt(-1);
-        else
-            cam.dolly(10);
-    }
-    if (key == OF_KEY_LEFT){
-        if (bShiftDown && bCtrlDown)
-            cam.roll(1);
-        else if (bCtrlDown)
-            cam.pan(1);
-        else
-            cam.truck(-10);
-    }
-    if (key == OF_KEY_RIGHT){
-        if (bShiftDown && bCtrlDown)
-            cam.roll(-1);
-        else if (bCtrlDown)
-            cam.pan(-1);
-        else
-            cam.truck(10);
-    }
+    
     if (key =='f')
         ofToggleFullscreen();
     if (key == '1')
         bDrawAxis = !bDrawAxis;
     if (key == '2')
-        bDrawGraticules = !bDrawGraticules;
+        bDrawTextured = !bDrawTextured;
     if (key == '3')
         bDrawBoundaries = !bDrawBoundaries;
     if (key =='c'){
+        
+        if (camIndex==0)
+            updateCams(easyCam.getPosition(), easyCam.getLookAtDir()*param.farClip, easyCam.getOrientationQuat());
+        else if (camIndex==1)
+            updateCams(sphereCam.movedTo, sphereCam.lookedAt, sphereCam.getOrientationQuat());
+        else if (camIndex==2)
+            updateCams(cam.getPosition(), cam.getLookAtDir()*param.farClip, cam.getOrientationQuat());
         
         camIndex = (camIndex + 1) % 3;
             
         if (camIndex == 0)
             easyCam.enableMouseInput();
-        else
+        else{
             easyCam.disableMouseInput();
+        }
     }
     if (key == 'r')
-        cam.resetTransform();
+        updateCams(ofVec3f(4527.78, -143.096, 8868.1), ofVec3f(0), ofQuaternion(120,ofVec3f(0,1,0)));
     if (key == 'h')
         bShowHelp = !bShowHelp;
+    
+    
+    //---------------------------------------
+    // tests
+    static int bodyIndex = 0;
+    static int moonIndex = -1;
+    static int numMoons = 0;
+    
+    ofVec3f bodyPos;
+    double bodyExtent;
+    double bodyRadius;
+    
+    
+    if (key == ' '){
+        
+        if (camIndex == 1){
+            
+            ofCelestialBody currentBody = solarSystem.bodies[bodyIndex];
+            numMoons = currentBody.moons.size();
+            
+            bodyPos = currentBody.getPosition();
+            bodyExtent = currentBody.extent;
+            bodyRadius = currentBody.radius;
+            
+            if (moonIndex>=0){
+                ofQuaternion qat;
+                qat.makeRotate(currentBody.inclination, ofVec3f(1, 0, 0));
+                bodyPos += currentBody.moons[moonIndex].getPosition()*qat;
+                bodyExtent = currentBody.moons[moonIndex].extent;
+                bodyRadius = currentBody.moons[moonIndex].radius;
+                
+            }
+           
+            
+            ofVec3f sphereLookAt;
+            ofVec3f sphereTarget;
+            
+            if (solarSystem.mode == ofSolarSystem::SIZE){
+        
+                // view planet by planet faced to planet along x axis
+                //sphereLookAt = bodyPos;
+                //                sphereTarget = bodyPos;
+                //                sphereTarget.x -= bodyRadius * 6; //3;
+                //                sphereTarget.y -= bodyExtent * 1;
+                //                sphereTarget.z -= bodyRadius;
+
+                
+                if (moonIndex>=0)
+                    sphereLookAt = currentBody.getPosition();
+                else
+                    sphereLookAt = solarSystem.bodies[0].getPosition();
+
+                sphereTarget = bodyPos;
+                sphereTarget.z -= bodyExtent * 10.;
+                sphereTarget.y -= bodyExtent * 2.;
+                
+            
+            }
+            
+            if (solarSystem.mode == ofSolarSystem::DISTANCE){
+                
+                if (moonIndex>=0)
+                    sphereLookAt = currentBody.getPosition();
+                else
+                    sphereLookAt = solarSystem.bodies[0].getPosition();
+                
+                sphereTarget = bodyPos;
+                sphereTarget.z -= bodyExtent * 10.;
+                sphereTarget.y -= bodyExtent * 2.;
+
+                
+            }
+            
+            cout<<"sphereCam Pos= "<<sphereTarget<<endl;
+            cout<<"sphereCam lAt= "<<sphereLookAt<<endl;
+            sphereCam.lookAtTo(sphereLookAt, 500);
+            sphereCam.moveTo(sphereTarget, 2000);
+            
+            if (moonIndex == numMoons-1 || numMoons == 0){
+                moonIndex = -1; // reset moon counter
+                bodyIndex = (bodyIndex + 1) % solarSystem.bodies.size();
+            }
+            else
+                moonIndex++; // increase moon counter
+            
+        }
+    }
+    
+    if (key == 'd'){
+		solarSystem.mode = ofSolarSystem::DISTANCE;
+    }
+    if (key == 's'){
+        solarSystem.mode = ofSolarSystem::SIZE;
+    }
 
 }
 
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
-    if (key == OF_KEY_SHIFT){
-        bShiftDown = false;
-        easyCam.enableMouseInput();
-    }
-    if (key == OF_KEY_CONTROL)
-        bCtrlDown = false;
 }
 
 //--------------------------------------------------------------
 void testApp::mouseMoved(int x, int y ){
-
-//    if ((camIndex == 0 && bShiftDown) || camIndex==1){
-//    float amount = 2;
-//    float rotateAmountX = ofMap(ofGetMouseX(), 0, ofGetWidth(), -amount, amount);
-//    float rotateAmountY = ofMap(ofGetMouseY(), 0, ofGetHeight(), -amount, amount);
-//    
-//    cam.pan(-rotateAmountX);
-//    cam.tilt(-rotateAmountY);
-//    }
 }
 
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button){
+    //every time the mouse is dragged, track the change
+	//accumulate the changes inside of curRot through multiplication
+    //cam.tilt((lastMouse.y-y)*param.dampen);
+    //cam.pan((lastMouse.x-x)*param.dampen);
     
+    if (camIndex == 2) {
+        ofVec2f mouse(x,y);
+        if (button == OF_MOUSE_BUTTON_MIDDLE){
+            // move left/up
+            cam.truck((lastMouse.x-x)*param.dampen);
+            cam.boom((lastMouse.y-y)*param.dampen);
+        }
+        else if (button == OF_MOUSE_BUTTON_RIGHT){
+            //move forward/backwards
+            cam.dolly((y-lastMouse.y)*param.dampen);
+        }
+        else if (button == OF_MOUSE_BUTTON_LEFT){
+            // rotate
+            ofQuaternion yRot((y-lastMouse.y)*param.dampen*50, cam.getXAxis());
+            ofQuaternion xRot((lastMouse.x-x)*param.dampen*50, cam.getYAxis());
+            curRot = yRot*xRot;
+            cam.rotate(curRot);
+        }
+        lastMouse = mouse;
+    }
 }
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-    
+    //store the last mouse point when it's first pressed to prevent popping
+	lastMouse = ofVec2f(x,y);
 }
 
 //--------------------------------------------------------------
