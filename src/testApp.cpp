@@ -60,10 +60,14 @@ void testApp::setup(){
     easyCam.setNearClip(0.01);
     cam.setNearClip(0.01);
     
+    ofVec3f camPos = solarSystem.bodies[0].getPosition();
+    float bodyRadius = solarSystem.bodies[0].radius;
+    camPos.x -= bodyRadius * 6; //3;
+    camPos.y -= bodyRadius * 1;
+    camPos.z -= bodyRadius;
     
-    ofVec3f camPos = ofVec3f(-10000, 0, -10000);
     easyCam.setPosition(camPos);
-    easyCam.setTarget(ofVec3f(0,0,-10000));
+    easyCam.setTarget(ofVec3f(0,0,0));
     
     solarSystem.mode = ofSolarSystem::SIZE;
     
@@ -246,22 +250,13 @@ void testApp::keyPressed(int key){
             if (solarSystem.mode == ofSolarSystem::SIZE){
         
                 // view planet by planet faced to planet along x axis
-                //sphereLookAt = bodyPos;
-                //                sphereTarget = bodyPos;
-                //                sphereTarget.x -= bodyRadius * 6; //3;
-                //                sphereTarget.y -= bodyExtent * 1;
-                //                sphereTarget.z -= bodyRadius;
-
+                sphereLookAt = bodyPos;
                 
-                if (moonIndex>=0)
-                    sphereLookAt = currentBody.getPosition();
-                else
-                    sphereLookAt = solarSystem.bodies[0].getPosition();
-
                 sphereTarget = bodyPos;
-                sphereTarget.z -= bodyExtent * 10.;
-                sphereTarget.y -= bodyExtent * 2.;
-                
+                sphereTarget.x -= bodyRadius * 6; //3;
+                sphereTarget.y -= bodyExtent * 1;
+                sphereTarget.z -= bodyRadius;
+
             
             }
             
