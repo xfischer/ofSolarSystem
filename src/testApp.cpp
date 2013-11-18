@@ -16,7 +16,7 @@ void Params::setup() {
     distanceFactor = 100000.;
     sphereResolution = 75;
     dampen = 0.001;
-    texturePath = "textures/lowres/";
+    texturePath = "textures/medres/";
     showMoons = true;
     sphereCamCycleMoons = true;
 }
@@ -242,9 +242,16 @@ void testApp::keyPressed(int key){
             bodyRadius = currentBody.radius;
             
             if (moonIndex>=0){
-                ofQuaternion qat;
-                qat.makeRotate(currentBody.inclination, ofVec3f(1, 0, 0));
-                bodyPos += currentBody.moons[moonIndex].getPosition()*qat;
+                
+                // add planet inclination and rotation to moon position
+                ofQuaternion qatInclination;
+                qatInclination.makeRotate(currentBody.inclination, ofVec3f(1, 0, 0));
+                ofQuaternion qatRotation;
+                qatRotation.makeRotate(ofGetElapsedTimeMillis()/currentBody.rotationPeriod*0.002, ofVec3f(0, 1, 0));
+                
+                
+                // rotation not good. add a chase cam feature
+                bodyPos += currentBody.moons[moonIndex].getPosition() /** qatRotation*/ * qatInclination;
                 bodyExtent = currentBody.moons[moonIndex].extent;
                 bodyRadius = currentBody.moons[moonIndex].radius;
                 

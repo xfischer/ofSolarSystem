@@ -285,7 +285,7 @@ void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundar
     }
     
     ofRotate(ofGetElapsedTimeMillis()/rotationPeriod*0.002, 0, 1, 0);
-
+   
 	if (bDrawAxis){
 		ofDrawAxis(radius);
 	}
