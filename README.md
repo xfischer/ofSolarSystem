@@ -2,6 +2,7 @@ ofSolarSystem
 ==============
 
 Work in progress
+![](https://raw.github.com/XavierFischer/ofSolarSystem/master/bin/data/screencap.png)
 
 Solar system navigator made with OpenFrameworks.
 Relative planet sizes and rotation speeds are accurate.
