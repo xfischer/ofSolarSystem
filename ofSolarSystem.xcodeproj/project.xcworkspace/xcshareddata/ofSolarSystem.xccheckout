@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>F502A854-3005-4563-A300-0BEBC7E7D93C</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ofSolarSystem</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>4F01E903-B102-4632-B805-8974DB5C6196</key>
+		<string>https://github.com/stefang/ofxSphereCam.git</string>
+		<key>7E91AB69-277B-4E14-8A0B-A3DBE64BF287</key>
+		<string>https://github.com/arturoc/ofxTween.git</string>
+		<key>FBE9CC6D-03D8-4460-A434-BF70735CF1A0</key>
+		<string>https://github.com/XavierFischer/ofSolarSystem.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ofSolarSystem.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>4F01E903-B102-4632-B805-8974DB5C6196</key>
+		<string>../../../../../addons/ofxSphereCam</string>
+		<key>7E91AB69-277B-4E14-8A0B-A3DBE64BF287</key>
+		<string>../../../../../addons/ofxTween</string>
+		<key>FBE9CC6D-03D8-4460-A434-BF70735CF1A0</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/XavierFischer/ofSolarSystem.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>FBE9CC6D-03D8-4460-A434-BF70735CF1A0</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>FBE9CC6D-03D8-4460-A434-BF70735CF1A0</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofSolarSystem</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>4F01E903-B102-4632-B805-8974DB5C6196</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxSphereCam</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7E91AB69-277B-4E14-8A0B-A3DBE64BF287</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxTween</string>
+		</dict>
+	</array>
+</dict>
+</plist>

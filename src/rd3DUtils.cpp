@@ -1,6 +1,6 @@
 //
 //  rd3DUtils.cpp
-//  RealDirections
+//  ofSolarSystem
 //
 //  Created by Xavier Fischer on 01/11/2013.
 //

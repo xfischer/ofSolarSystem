@@ -1,6 +1,6 @@
 /**
  *
- * RealDirections
+ * ofSolarSystem
  * Based on Quaternion Example for plotting latitude and longitude onto a sphere
  *
  * Created by Xavier Fischer on 10/01/2013
@@ -69,6 +69,8 @@ void testApp::setup(){
     easyCam.setPosition(camPos);
     easyCam.setTarget(ofVec3f(0,0,0));
     
+    setActiveCam(1);
+    
     solarSystem.mode = ofSolarSystem::SIZE;
     
     
@@ -118,6 +120,26 @@ void testApp::draw(){
     ofPopMatrix();
     drawHelp();
     
+}
+
+void testApp::setActiveCam(int cameraIndex){
+    
+    if (camIndex==0)
+        updateCams(easyCam.getPosition(), easyCam.getLookAtDir()*param.farClip, easyCam.getOrientationQuat());
+    else if (camIndex==1)
+        updateCams(sphereCam.movedTo, sphereCam.lookedAt, sphereCam.getOrientationQuat());
+    else if (camIndex==2)
+        updateCams(cam.getPosition(), cam.getLookAtDir()*param.farClip, cam.getOrientationQuat());
+    
+    camIndex = cameraIndex;
+    
+    if (camIndex == 0)
+        easyCam.enableMouseInput();
+    else{
+        easyCam.disableMouseInput();
+    }
+
+
 }
 
 void testApp::updateCams(ofVec3f position, ofVec3f lookat, ofQuaternion orientation){
@@ -189,23 +211,8 @@ void testApp::keyPressed(int key){
         bDrawTextured = !bDrawTextured;
     if (key == '3')
         bDrawBoundaries = !bDrawBoundaries;
-    if (key =='c'){
-        
-        if (camIndex==0)
-            updateCams(easyCam.getPosition(), easyCam.getLookAtDir()*param.farClip, easyCam.getOrientationQuat());
-        else if (camIndex==1)
-            updateCams(sphereCam.movedTo, sphereCam.lookedAt, sphereCam.getOrientationQuat());
-        else if (camIndex==2)
-            updateCams(cam.getPosition(), cam.getLookAtDir()*param.farClip, cam.getOrientationQuat());
-        
-        camIndex = (camIndex + 1) % 3;
-            
-        if (camIndex == 0)
-            easyCam.enableMouseInput();
-        else{
-            easyCam.disableMouseInput();
-        }
-    }
+    if (key =='c')
+        setActiveCam((camIndex + 1) % 3);
     if (key == 'r')
         updateCams(ofVec3f(4527.78, -143.096, 8868.1), ofVec3f(0), ofQuaternion(120,ofVec3f(0,1,0)));
     if (key == 'h')
@@ -214,7 +221,7 @@ void testApp::keyPressed(int key){
     
     //---------------------------------------
     // tests
-    static int bodyIndex = 0;
+    static int bodyIndex = 1;
     static int moonIndex = -1;
     static int numMoons = 0;
     

@@ -30,6 +30,7 @@ public:
 	void gotMessage(ofMessage msg);
     
     
+    
 private:
 	vector<City> cities;
     	
@@ -65,6 +66,7 @@ private:
 	
     bool vFlip;
     
+    void setActiveCam(int camIndex);
     void updateCams(ofVec3f position, ofVec3f lookat, ofQuaternion orientation);
     
 };

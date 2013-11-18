@@ -1,6 +1,6 @@
 //
 //  ofSolarSystem.h
-//  RealDirections
+//  ofSolarSystem
 //
 //  Created by Xavier Fischer on 05/11/2013.
 //

@@ -1,6 +1,6 @@
 //
 //  rdParams.cpp
-//  RealDirections
+//  ofSolarSystem
 //
 //  Created by Xavier Fischer on 11/11/2013.
 //

@@ -1,6 +1,6 @@
 //
 //  ofCelestialBody.cpp
-//  RealDirections
+//  ofSolarSystem
 //
 //  Created by Xavier Fischer on 20/10/13.
 //
