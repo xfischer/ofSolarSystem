@@ -10,7 +10,8 @@
 #include "ofMain.h"
 
 //--------------------------------------------------------------
-//Universal function which sets normals for the triangle mesh
+// Universal function which sets normals for the triangle mesh
+//
 void rd3DUtils::setNormals( ofMesh &mesh ){
     
 	//The number of the vertices
@@ -54,6 +55,10 @@ void rd3DUtils::setNormals( ofMesh &mesh ){
 	mesh.addNormals( norm );
 }
 
+//--------------------------------------------------------------
+// Function that combines a color image and a grayscale image
+// with alpha components to output an ARGB image
+//
 ofImage rd3DUtils::combineColorAlpha(string colorImageFile, string transpImageFile){
 
     ofImage colorImg;   // color image
@@ -79,15 +84,16 @@ ofImage rd3DUtils::combineColorAlpha(string colorImageFile, string transpImageFi
     unsigned char *colorData = colorImg.getPixels();        // color image pixels
     unsigned char *transpData = transpImg.getPixels();      // alpha component pixels
     
+    // gets number of bytes per pixel
     int colorBpp = colorImg.bpp / 8;
     int transBpp = transpImg.bpp / 8;
     
     for (int y=0; y<h; y++) {
         for (int x=0; x<w; x++) {
             
-            int index       = 4 * ( x + w * y);
-            int indexColor  = colorBpp * ( x + w * y);
-            int indexTransp = transBpp * ( x + w * y);
+            int index       = 4 * ( x + w * y);         // output index
+            int indexColor  = colorBpp * ( x + w * y);  // index in color image
+            int indexTransp = transBpp * ( x + w * y);  // index in grayscale image
             
             data[ index ]       = colorData[ indexColor ];      // copy red
             data[ index + 1 ]   = colorData[ indexColor + 1 ];  // copy green

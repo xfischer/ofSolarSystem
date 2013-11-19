@@ -10,40 +10,54 @@
 
 void Params::setup() {
     
-	farClip =  778412020+71490;
-    bodySpacing = .075;
-    radiusFactor = 100000.;
-    distanceFactor = 100000.;
+	farClip =  778412020+71490;     // cameras farclip as far as possible
+    bodySpacing = .075;             // spacing between planets when drawn in SIZE mode
+    radiusFactor = 100000.;         // factor for real radius to world radius conversion
+    distanceFactor = 100000.;       // factor for real distance to world radius conversion
     sphereResolution = 75;
-    dampen = 0.001;
-    texturePath = "textures/medres/";
-    showMoons = true;
-    sphereCamCycleMoons = true;
+    dampen = 0.001;                 // free cam mouse sensivity
+    texturePath = "textures/lowres/";    // use lowres, medres, or hires
+    showMoons = true;              // toggle moons
+    sphereCamCycleMoons = true;    // if moons enabled, and set to true, sphereCam will stop on moons too
+    
+    sphereCamRotationDelayMs = 500; // sphere cam rotation delay
+    sphereCamMoveDelayMs = 1000;     // sphere cam move delay
+
 }
 
 //--------------------------------------------------------------
 void testApp::setup(){
     
-    //ofEnableSmoothing();
-	//ofSetFrameRate(60);
+	ofSetFrameRate(60);
     ofSetVerticalSync(true);
-	//ofEnableAlphaBlending();
+	ofEnableAlphaBlending();
     ofEnableDepthTest();
-    //ofEnableAntiAliasing();
-
     
-    
+    // init params above
     param.setup();
+    
+    // add planets and moons
     solarSystem.setup();
-
-    cout<<"Init time: "<<ofGetElapsedTimeMillis()<<endl;
-    
-    //GUI
+   
+    // GUI
     bShowHelp = false;
-    
     bDrawAxis = false;
     bDrawTextured = true;
-    bDrawBoundaries = false;
+    
+    setupCameras();
+    
+    //---------------------------------------------
+    // set default mode to SIZE comparison
+    solarSystem.mode = ofSolarSystem::SIZE;
+    
+    
+}
+
+//---------------------------------------------
+void testApp::setupCameras(){
+    
+    //---------------------------------------------
+    // init cams
     camIndex = 0;
     
     easyCam.setDistance(1000);
@@ -51,6 +65,7 @@ void testApp::setup(){
     cam.setFarClip(param.farClip);
     easyCam.setFarClip(param.farClip);
     
+    // vFlip must be set to true. If false, sphere textures are flipped
     vFlip = true;
     easyCam.setVFlip(vFlip);
     sphereCam.setVFlip(vFlip);
@@ -70,27 +85,26 @@ void testApp::setup(){
     easyCam.setTarget(ofVec3f(0,0,0));
     
     setActiveCam(1);
-    
-    solarSystem.mode = ofSolarSystem::SIZE;
-    
-    
-    
-}
 
+}
 
 //--------------------------------------------------------------
 void testApp::update(){
-	ofSetWindowTitle(ofToString(ofGetFrameRate()));
     
+    // show framerate in window title
+	//ofSetWindowTitle(ofToString(ofGetFrameRate()));
+    
+    // update moon orbits
     solarSystem.update();
     
+    // sphereCam must be updated because position and target are tweened each frame
     sphereCam.update();
-    
 
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
+
 
 	ofBackground(0);
     
@@ -98,19 +112,22 @@ void testApp::draw(){
     
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
 
+    // start active cam
     switch (camIndex) {
         case 0:    easyCam.begin(); break;
         case 1:    sphereCam.begin(); break;
         case 2:    cam.begin(); break;
     }
     
-    solarSystem.draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
+        // draw whole system
+        solarSystem.draw(bDrawAxis, bDrawTextured);
+        
+        if (bDrawAxis){
+            sphereCam.draw();
+            cam.draw();
+        }
     
-	if (bDrawAxis){
-        sphereCam.draw();
-        cam.draw();
-	}
-    
+    // stop active cam
     switch (camIndex) {
         case 0: easyCam.end(); break;
         case 1: sphereCam.end(); break;
@@ -122,8 +139,11 @@ void testApp::draw(){
     
 }
 
+//--------------------------------------------------------------
+// copy active cam position and orientation to all other cams
 void testApp::setActiveCam(int cameraIndex){
     
+    // copy active cam position, lookAtDirection and orientation
     if (camIndex==0)
         updateCams(easyCam.getPosition(), easyCam.getLookAtDir()*param.farClip, easyCam.getOrientationQuat());
     else if (camIndex==1)
@@ -131,8 +151,10 @@ void testApp::setActiveCam(int cameraIndex){
     else if (camIndex==2)
         updateCams(cam.getPosition(), cam.getLookAtDir()*param.farClip, cam.getOrientationQuat());
     
+    // switch cam index
     camIndex = cameraIndex;
     
+    // if ofEasyCam is activated, disable its mouseInput to avoid unwanted moves
     if (camIndex == 0)
         easyCam.enableMouseInput();
     else{
@@ -142,6 +164,8 @@ void testApp::setActiveCam(int cameraIndex){
 
 }
 
+//--------------------------------------------------------------
+// Set position, lookAtDirection and orientation to all cameras
 void testApp::updateCams(ofVec3f position, ofVec3f lookat, ofQuaternion orientation){
     
     cam.setPosition(position);
@@ -158,7 +182,8 @@ void testApp::updateCams(ofVec3f position, ofVec3f lookat, ofQuaternion orientat
     
 }
 
-
+//--------------------------------------------------------------
+// Draw help panel (TODO: use ofxGui)
 void testApp::drawHelp(){
     stringstream helpStream;
     
@@ -170,7 +195,6 @@ void testApp::drawHelp(){
         helpStream << endl;
         helpStream << "1: draw axes: " << (bDrawAxis ? "YES" : "NO") << endl;
 		helpStream << "2: draw textures: " << (bDrawTextured ? "YES" : "NO") << endl;
-		helpStream << "3: draw boundaries: " << (bDrawBoundaries ? "YES" : "NO") << endl;
         helpStream << "c: cycle cameras: ";
         switch (camIndex) {
             case 0:
@@ -200,6 +224,7 @@ void testApp::drawHelp(){
 
 
 //--------------------------------------------------------------
+// Handles all keyboard input
 void testApp::keyPressed(int key){
     
     
@@ -209,98 +234,92 @@ void testApp::keyPressed(int key){
         bDrawAxis = !bDrawAxis;
     if (key == '2')
         bDrawTextured = !bDrawTextured;
-    if (key == '3')
-        bDrawBoundaries = !bDrawBoundaries;
     if (key =='c')
         setActiveCam((camIndex + 1) % 3);
     if (key == 'r')
-        updateCams(ofVec3f(4527.78, -143.096, 8868.1), ofVec3f(0), ofQuaternion(120,ofVec3f(0,1,0)));
+        setupCameras();
     if (key == 'h')
         bShowHelp = !bShowHelp;
     
     
-    //---------------------------------------
-    // tests
-    static int bodyIndex = 1;
-    static int moonIndex = -1;
-    static int numMoons = 0;
-    
-    ofVec3f bodyPos;
-    double bodyExtent;
-    double bodyRadius;
     
     
-    if (key == ' '){
-        
-        if (camIndex == 1){
-            
-            ofCelestialBody currentBody = solarSystem.bodies[bodyIndex];
-            numMoons = currentBody.moons.size();
-            
-            bodyPos = currentBody.getPosition();
-            bodyExtent = currentBody.extent;
-            bodyRadius = currentBody.radius;
-            
-            if (moonIndex>=0){
-                
-                // add planet inclination and rotation to moon position
-                ofQuaternion qatInclination;
-                qatInclination.makeRotate(currentBody.inclination, ofVec3f(1, 0, 0));
-                ofQuaternion qatRotation;
-                qatRotation.makeRotate(ofGetElapsedTimeMillis()/currentBody.rotationPeriod*0.002, ofVec3f(0, 1, 0));
-                
-                
-                // rotation not good. add a chase cam feature
-                bodyPos += currentBody.moons[moonIndex].getPosition() /** qatRotation*/ * qatInclination;
-                bodyExtent = currentBody.moons[moonIndex].extent;
-                bodyRadius = currentBody.moons[moonIndex].radius;
-                
-            }
-           
-            
-            ofVec3f sphereLookAt;
-            ofVec3f sphereTarget;
-            
-            if (solarSystem.mode == ofSolarSystem::SIZE){
-        
-                // view planet by planet faced to planet along x axis
-                sphereLookAt = bodyPos;
-                
-                sphereTarget = bodyPos;
-                sphereTarget.x -= bodyRadius * 6; //3;
-                sphereTarget.y -= bodyExtent * 1;
-                sphereTarget.z -= bodyRadius;
+    if (key == ' ' && camIndex == 1){
 
-            
-            }
-            
-            if (solarSystem.mode == ofSolarSystem::DISTANCE){
-                
-                if (moonIndex>=0)
-                    sphereLookAt = currentBody.getPosition();
-                else
-                    sphereLookAt = solarSystem.bodies[0].getPosition();
-                
-                sphereTarget = bodyPos;
-                sphereTarget.z -= bodyExtent * 10.;
-                sphereTarget.y -= bodyExtent * 2.;
+        //---------------------------------------
+        // sphere cam
+        static int bodyIndex = 1;  // tracks current planet
+        static int moonIndex = -1; // tracks current planet's moon
+        static int numMoons = 0;   // tracks current planet moons count
+        
+        ofVec3f bodyPos;
+        double bodyExtent;
+        double bodyRadius;
 
-                
-            }
+        // get current planet
+        ofCelestialBody currentBody = solarSystem.bodies[bodyIndex];
+
+        // get current planet moon count
+        // set to zero if disable cycle through requested
+        numMoons = param.sphereCamCycleMoons ? currentBody.moons.size() : 0;
+        
+        // get planet pos, extent and radius
+        bodyPos = currentBody.getPosition();
+        bodyExtent = currentBody.extent;
+        bodyRadius = currentBody.radius;
+        
+        if (moonIndex>=0){
             
-            cout<<"sphereCam Pos= "<<sphereTarget<<endl;
-            cout<<"sphereCam lAt= "<<sphereLookAt<<endl;
-            sphereCam.lookAtTo(sphereLookAt, 500);
-            sphereCam.moveTo(sphereTarget, 2000);
+            // get moon global transformation
+            // by combining planet inclination and rotation
+            ofQuaternion qatInclination;
+            qatInclination.makeRotate(currentBody.inclination, ofVec3f(1, 0, 0));
+            //ofQuaternion qatRotation;
+            //qatRotation.makeRotate(ofGetElapsedTimeMillis()/currentBody.rotationPeriod*0.002, ofVec3f(0, 1, 0));
             
-            if (moonIndex == numMoons-1 || numMoons == 0){
-                moonIndex = -1; // reset moon counter
-                bodyIndex = (bodyIndex + 1) % solarSystem.bodies.size();
-            }
-            else
-                moonIndex++; // increase moon counter
+            // TODO: add a chase cam feature when moon orbits planet
+            bodyPos += currentBody.moons[moonIndex].getPosition() /** qatRotation*/ * qatInclination;
+            bodyExtent = currentBody.moons[moonIndex].extent;
+            bodyRadius = currentBody.moons[moonIndex].radius;
             
         }
+        
+        ofVec3f sphereLookAt;
+        ofVec3f sphereTarget;
+        
+        if (solarSystem.mode == ofSolarSystem::SIZE){
+    
+            // view planet by planet faced to planet along x axis
+            sphereLookAt = bodyPos;
+            
+            sphereTarget = bodyPos;
+            sphereTarget.x -= bodyRadius * 6; //3;
+            sphereTarget.y -= bodyExtent * 1;
+            sphereTarget.z -= bodyRadius;
+
+        
+        } else if (solarSystem.mode == ofSolarSystem::DISTANCE){
+            
+            if (moonIndex>=0)
+                sphereLookAt = currentBody.getPosition();
+            else
+                sphereLookAt = solarSystem.bodies[0].getPosition();
+            
+            sphereTarget = bodyPos;
+            sphereTarget.z -= bodyExtent * 10.;
+            sphereTarget.y -= bodyExtent * 2.;
+        }
+        
+        sphereCam.lookAtTo(sphereLookAt, param.sphereCamRotationDelayMs);
+        sphereCam.moveTo(sphereTarget, param.sphereCamMoveDelayMs);
+        
+        if (moonIndex == numMoons-1 || numMoons == 0){
+            moonIndex = -1; // reset moon counter
+            bodyIndex = (bodyIndex + 1) % solarSystem.bodies.size();
+        }
+        else
+            moonIndex++; // increase moon counter
+            
     }
     
     if (key == 'd'){
