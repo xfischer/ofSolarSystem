@@ -31,6 +31,9 @@ public:
     bool showMoons;
     bool sphereCamCycleMoons;   // if true, sphereCam will stop on each moon
     
+    float sphereCamRotationDelayMs; // sphere cam rotation delay
+    float sphereCamMoveDelayMs;     // sphere cam move delay
+    
 };
 
 extern Params param; //Declaration of a global variable

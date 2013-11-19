@@ -5,12 +5,6 @@
 #include "ofSolarSystem.h"
 #include "rdParams.h"
 
-typedef struct {
-	string name;
-	float latitude;
-	float longitude;
-} City;
-
 
 class testApp : public ofBaseApp{
     
@@ -32,20 +26,12 @@ public:
     
     
 private:
-	vector<City> cities;
-    	
-	vector< vector<ofPoint> > boundaries;
-    
+	
     ofSolarSystem solarSystem;
-    
-	ofxSphereCam sphereCam;
-    ofEasyCam easyCam;
-    ofCamera cam;
     
 	bool bDrawAxis;
     bool bDrawTextured;
     
-    bool bDrawBoundaries;
     int camIndex;
     bool bShiftDown;
     
@@ -66,8 +52,19 @@ private:
 	
     bool vFlip;
     
+    // Cameras
+    ofxSphereCam sphereCam;
+    ofEasyCam easyCam;
+    ofCamera cam;
+    
+    // copy active cam position and orientation to all other cams
     void setActiveCam(int camIndex);
+    
+    // Set position, lookAtDirection and orientation to all cameras
     void updateCams(ofVec3f position, ofVec3f lookat, ofQuaternion orientation);
+    
+    // reset all cameras
+    void setupCameras();
     
 };
 

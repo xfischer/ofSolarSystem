@@ -12,31 +12,10 @@
 
 
 //--------------------------------------------------------------
-ofCelestialBody::ofCelestialBody(string _name, double _radius, double _orbitDistance, double _inclination, double _rotationPeriod, string textureFileName, string boundariesFileName){
-
-    name = _name;
-    radius = _radius/param.radiusFactor;
-    extent = radius;
-    distance = _orbitDistance/param.distanceFactor;
-    inclination = _inclination;
-    rotationPeriod = _rotationPeriod;
-    
-    
-    texture.loadImage(param.texturePath + textureFileName);
-    
-    setup();
-    
-    vector< vector<ofPoint> > boundaries;
-    loadSegments(boundaries, boundariesFileName);
-    addToMesh(boundaries, ofFloatColor(1.0));
-    
-}
-
-
 ofCelestialBody::ofCelestialBody(string _name, double _radius, double _orbitDistance, double _inclination, double _rotationPeriod, string textureFileName){
     
     name = _name;
-    radius = _radius/param.radiusFactor;
+    radius = _radius/param.radiusFactor; // reduce radius and sun distance to avoid too large numbers
     extent = radius;
     distance = _orbitDistance/param.distanceFactor;
     inclination = _inclination;
@@ -52,19 +31,14 @@ ofCelestialBody::ofCelestialBody(string _name, double _radius, double _orbitDist
 void ofCelestialBody::setup(){
     
     sphere.setRadius( radius );
-    sphere.setResolution(param.sphereResolution);
-    //    sphere.setResolution(    ofMap(radius/RADIUSFACTOR, 2000/RADIUSFACTOR, 696342/RADIUSFACTOR, 100, 1000));
+    
+    if (name == "Sun")
+        sphere.setResolution(param.sphereResolution);
+    else
+        sphere.setResolution(param.sphereResolution / 1.5); // reduce number of vertices if planet
     
     setupGraticules();
     
-}
-
-//--------------------------------------------------------------
-void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTextureFile, string ringAlphaFile){
-    
-    ringTexture = rd3DUtils::combineColorAlpha(param.texturePath + ringTextureFile, param.texturePath + ringAlphaFile);
-    
-	setupRingMesh(startRadius, endRadius);
 }
 
 //--------------------------------------------------------------
@@ -76,6 +50,7 @@ void ofCelestialBody::addMoon(const ofCelestialBody &moon){
 }
 
 //--------------------------------------------------------------
+// graticules are better in wireframe mode than wireframe spheres meshes
 void ofCelestialBody::setupGraticules(){
     //setupGraticules
     
@@ -86,7 +61,7 @@ void ofCelestialBody::setupGraticules(){
     
     ofQuaternion latRot, longRot;
     
-    // meridians
+    // meridians every 15°
     for (int lon = 0; lon <=360; lon+=15) {
         for (int lat = 90; lat <=90+360; lat+=1) {
             
@@ -100,7 +75,7 @@ void ofCelestialBody::setupGraticules(){
         }
     }
     
-    // parallels
+    // parallels every 15°
     for (int lat = 75; lat >=-75; lat-=15) {  // north to south
         for (int lon = 0; lon <=360; lon+=1) {
             
@@ -138,13 +113,23 @@ void ofCelestialBody::setupOrbitMesh(){
 }
 
 //--------------------------------------------------------------
+void ofCelestialBody::addRing(float startRadius, float endRadius, string ringTextureFile, string ringAlphaFile){
+    
+    // Ring files comes in two parts : a color file and a transparency file
+    ringTexture = rd3DUtils::combineColorAlpha(param.texturePath + ringTextureFile, param.texturePath + ringAlphaFile);
+    
+	setupRingMesh(startRadius, endRadius);
+}
+
+//--------------------------------------------------------------
+// Create a ring mesh
 void ofCelestialBody::setupRingMesh(float startRadius, float endRadius){
     
     ringMesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
     ringMesh.clear();
-    startRadius /= param.radiusFactor;
-    endRadius /= param.radiusFactor;
-    extent += endRadius-radius;
+    startRadius /= param.radiusFactor; // start of ring measured from planet center
+    endRadius /= param.radiusFactor;   // end of ring measured from planet center
+    extent += endRadius-radius;        // increase planet extent
     
     int w = ringTexture.width;
     int h = ringTexture.height;
@@ -156,12 +141,13 @@ void ofCelestialBody::setupRingMesh(float startRadius, float endRadius){
     
     for (int x = 0; x <=360; x+=2) {
         
-        rot.makeRotate(x, 0, 1, 0);
+        rot.makeRotate(x, 0, 1, 0); // rotate along planet vertical axis
         
-        
+        // add vertex in outer ring
         ringMesh.addVertex(rot * radOut);
         ringMesh.addTexCoord( ofPoint(0, (x*h)/360));
         
+        // add vertex in inner ring
         ringMesh.addVertex(rot * radIn);
         ringMesh.addTexCoord( ofPoint(w, (x*h)/360));
 		
@@ -181,156 +167,98 @@ ofVec3f& ofCelestialBody::getPosition(){
     return position;
 }
 
-//--------------------------------------------------------------
-void ofCelestialBody::loadSegments( vector< vector<ofPoint> > &segments, string _file){
-    
-	ifstream fileIn;
-    
-	fileIn.open( ofToDataPath( _file ).c_str());
-	if(fileIn.is_open()) {
-        
-		int lineCount = 0;
-        
-		vector<ofPoint> newPoints;
-        
-		while(fileIn != NULL) {
-			string temp;
-			getline(fileIn, temp);
-            
-			// Skip empty lines.
-			if(temp.length() != 0) {
-                
-				vector<string> values = ofSplitString(temp, " ");
-                
-                if ( values[0] == "segment" || values[0].find("segment", 0) != -1){
-                    
-					if (lineCount != 0){
-						segments.push_back( newPoints );
-					}
-                    
-					newPoints.clear();
-				} else {
-					ofPoint newPoint = ofPoint();
-					newPoint.y = ofToFloat( values[0] );
-					newPoint.x = ofToFloat( values[1] );
-                    
-					newPoints.push_back(newPoint);
-				}
-                
-				lineCount++;
-			}
-		}
-        
-		if (lineCount != 0){
-			segments.push_back( newPoints );
-		}
-	}
-    
-}
 
 //--------------------------------------------------------------
-void ofCelestialBody::addToMesh(vector<vector<ofPoint> > &boundaries, ofFloatColor _color){
+void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bRingPass){
     
-    boundariesMesh.setMode(OF_PRIMITIVE_LINES);
-	boundariesMesh.clear();
-    
-    ofVec3f center = ofVec3f(0,0,radius);
-    
-	for(int i = 0; i < boundaries.size(); i++){
+    // Draw only transparent related stuff : rings, orbits
+    // this will be drawed at last
+    if (bRingPass)
+    {
+        ofSetColor(255);
+        ofPushMatrix();
         
-		ofVec3f lastPoint;
+        ofTranslate(position); // set planet distance
+        ofRotate(inclination, 1, 0, 0); // inclinate planet
         
-		for (int j = 0; j < boundaries[i].size(); j++){
-            
-            ofQuaternion latRot, longRot;
-			latRot.makeRotate(boundaries[i][j].y, 1, 0, 0);
-			longRot.makeRotate(boundaries[i][j].x+180, 0, 1, 0);
-            
-			ofVec3f worldPoint = latRot * longRot * center;
-            
-			if ( j > 0 ){
-				boundariesMesh.addColor( _color );
-				boundariesMesh.addVertex(lastPoint);
-				boundariesMesh.addColor( _color );
-				boundariesMesh.addVertex(worldPoint);
-			}
-            
-			lastPoint = worldPoint;
-		}
-	}
-}
-
-//--------------------------------------------------------------
-void ofCelestialBody::draw(bool bDrawAxis, bool bDrawTextured, bool bDrawBoundaries){
-    
-    ofSetColor(255);
-    
-    ofPushMatrix();
-    
-    ofTranslate(position);
-    
-    ofPushMatrix();
-    
-    // draw planet name
-    ofTranslate(0,-radius*1.5,0);
-    ofDrawBitmapString(name, 0, 0);
-
-    ofPopMatrix();
-    
-    ofRotate(inclination, 1, 0, 0);
-    
-    // Moons
-    for(int i = 0; i < moons.size(); i++){
-        moons[i].draw(bDrawAxis, bDrawTextured, bDrawBoundaries);
-    }
-    
-    ofRotate(ofGetElapsedTimeMillis()/rotationPeriod*0.002, 0, 1, 0);
-   
-	if (bDrawAxis){
-		ofDrawAxis(radius);
-	}
-    
-    if (bDrawTextured){
-
-        sphere.mapTexCoordsFromTexture( texture.getTextureReference() );
-        texture.getTextureReference().bind();
-        sphere.draw();
-        //sphere.drawNormals(20,false);
-        texture.getTextureReference().unbind();
-        
-        
-        if (ringMesh.getNumVertices()>0)
-        {
-            //rd3DUtils::setNormals(ringMesh);
-            ringTexture.getTextureReference().bind();
-            ringMesh.draw();
-            ringTexture.getTextureReference().unbind();
+        // draw moons (here only orbits will be drawn)
+        for(int i = 0; i < moons.size(); i++){
+            moons[i].draw(bDrawAxis, bDrawTextured, bRingPass);
         }
-
+        
+        // draw rings
+        if (ringMesh.getNumVertices()>0){
+            
+            // ring does rotate but its useless here
+            //ofRotate(ofGetElapsedTimeMillis()/rotationPeriod*0.002, 0, 1, 0);
+            
+            if (bDrawTextured){
+                
+                //rd3DUtils::setNormals(ringMesh);
+                ringTexture.getTextureReference().bind();
+                ringMesh.draw();
+                ringTexture.getTextureReference().unbind();
+            }
+            else{
+                
+                ofSetColor(255);
+                ringMesh.drawWireframe();
+            }
+        }
+        
+        ofPopMatrix();
+        
+        // draw orbit
+        ofSetColor(255, 255, 255, 64);
+        orbitMesh.draw();
+        ofSetColor(255);
+        
     }
     else{
-        
+    
         ofSetColor(255);
-        graticulesMesh.draw();
+        ofPushMatrix();
         
+        ofTranslate(position); // set planet distance
+        
+        // draw planet name
+        ofPushMatrix();
+        ofTranslate(0,-radius*1.5,0);
+        ofDrawBitmapString(name, 0, 0);
+        ofPopMatrix();
+        
+        // rotate planet
+        ofRotate(inclination, 1, 0, 0);
+        
+        // draw moons
+        for(int i = 0; i < moons.size(); i++){
+            moons[i].draw(bDrawAxis, bDrawTextured, bRingPass);
+        }
+        
+        // rotate planet
+        ofRotate(ofGetElapsedTimeMillis()/rotationPeriod*0.002, 0, 1, 0);
+       
+        if (bDrawAxis)
+            ofDrawAxis(radius);
+        
+        if (bDrawTextured){
 
-//        ofSetColor(ofColor::green);
-        if (ringMesh.getNumVertices()>0)
-            ringMesh.drawWireframe();
-
-        //sphere.drawWireframe();
+            sphere.mapTexCoordsFromTexture( texture.getTextureReference() );
+            texture.getTextureReference().bind();
+            sphere.draw();
+            //sphere.drawNormals(20,false);
+            texture.getTextureReference().unbind();
+        }
+        else{
+            
+            ofSetColor(255);
+            sphere.drawWireframe();
+            //graticulesMesh.draw();
+        }
+        
+        ofPopMatrix();
+        
 
     }
-
-    if (boundariesMesh.getNumVertices()>0 && bDrawBoundaries)
-        boundariesMesh.draw();
-    
-    
-    ofPopMatrix();
-    
-    //ofSetColor(64);
-    ofSetColor(255, 255, 255, 64);
-    orbitMesh.draw();
-    ofSetColor(255);
     
 }

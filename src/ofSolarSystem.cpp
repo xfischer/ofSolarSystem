@@ -9,19 +9,13 @@
 #include "ofSolarSystem.h"
 #include "rdParams.h"
 
-#ifdef __APPLE__
-#define BOUNDARIES_FILE "boundaries/unix-boundaries-simple.txt"
-#else
-#define BOUNDARIES_FILE "boundaries/boundaries-simple.txt"
-#endif
-
 
 ofSolarSystem::ofSolarSystem(){
 }
 
+//-----------------------------------------------------------------
+// Setups Sun, planets and moons
 void ofSolarSystem::setup(){
-    
-    param.showMoons = true;
     
     bodies.clear();
     
@@ -40,7 +34,7 @@ void ofSolarSystem::setup(){
     
 	// -----------------------------
 	// Earth
-    ofCelestialBody earth =  ofCelestialBody("Earth", 6371.00, 149598262, 23.4393,  0.99726968, "earth.jpg", BOUNDARIES_FILE );
+    ofCelestialBody earth =  ofCelestialBody("Earth", 6371.00, 149598262, 23.4393,  0.99726968, "earth.jpg" );
     ofCelestialBody moon = ofCelestialBody("Moon", 1737.4, 384400, 6.687, 27.321582, "moon.jpg");
     earth.addMoon( moon);
     bodies.push_back( earth );
@@ -92,93 +86,104 @@ void ofSolarSystem::setup(){
     
 }
 
+//-----------------------------------------------------------------
+// Set planet and moons positions according to current comparison mode
 void ofSolarSystem::update(){
     
     
-    //-----------------------------------------------------------------
-    // Set planets and moons positions in SIZE mode
-    //
-    if (mode == SIZE){
+    static ComparisonMode lastMode = NOT_SET;
+    
+    // Do this only when mode changes
+    if (lastMode != mode){
+    
+        lastMode = mode;
         
         //-----------------------------------------------------------------
-        // put bodies one next to another
-        double dist = 0;
-        
-        for(int i = 0; i < bodies.size(); i++){
+        // Set planets and moons positions in SIZE mode
+        //
+        if (mode == SIZE){
             
-            if (dist > 0)
-                dist += bodies[i].extent + param.bodySpacing;
+            //-----------------------------------------------------------------
+            // put bodies one next to another
+            double dist = 0;
             
-            // Moons
-            double moonDist = 0;
-            if (bodies[i].moons.size() > 0){
+            for(int i = 0; i < bodies.size(); i++){
                 
-                moonDist = bodies[i].extent;
-                for(int j = 0; j < bodies[i].moons.size(); j++ ){
-
-                    moonDist += bodies[i].moons[j].radius + param.bodySpacing;
+                if (dist > 0)
+                    dist += bodies[i].extent + param.bodySpacing;
+                
+                // Moons
+                double moonDist = 0;
+                if (bodies[i].moons.size() > 0){
                     
+                    moonDist = bodies[i].extent;
+                    for(int j = 0; j < bodies[i].moons.size(); j++ ){
+
+                        moonDist += bodies[i].moons[j].radius + param.bodySpacing;
+                        
+                        bodies[i].moons[j].setPosition(ofVec3f(0, 0, -moonDist));
+                        
+                    }
+                    
+                    dist += moonDist - bodies[i].extent/2;
+
+                }
+                
+                
+                bodies[i].setPosition(ofVec3f(0, 0, -dist));
+                
+                dist += moonDist + bodies[i].extent + param.bodySpacing;
+                
+            }
+        }
+        
+        //-----------------------------------------------------------------
+        // Set planets and moons positions in DISTANCE mode
+        //
+        else if (mode == DISTANCE){
+            
+            
+            //-----------------------------------------------------------------
+            // put bodies with real relative distances from Sun's surface
+            double dist;
+            double sunRadius;
+            float factor = param.radiusFactor == param.distanceFactor ? 0 : 1;
+            
+            for(int i = 0; i < bodies.size(); i++){
+
+                
+                if (i == 0){
+                    dist = 0;
+                    sunRadius = bodies[i].extent;
+                }
+                else{
+                    dist = bodies[i].distance + factor*sunRadius;
+                }
+                
+                bodies[i].setPosition(ofVec3f(0, 0, -dist));
+                for(int j = 0; j < bodies[i].moons.size(); j++ ){
+                    
+                    float moonDist = bodies[i].moons[j].distance + factor*bodies[i].radius;
                     bodies[i].moons[j].setPosition(ofVec3f(0, 0, -moonDist));
                     
                 }
-                
-                dist += moonDist - bodies[i].extent/2;
 
-            }
-            
-            
-            bodies[i].setPosition(ofVec3f(0, 0, -dist));
-            
-            dist += moonDist + bodies[i].extent + param.bodySpacing;
-            
-        }
-    }
-    
-    //-----------------------------------------------------------------
-    // Set planets and moons positions in DISTANCE mode
-    //
-    if (mode == DISTANCE){
-        
-        
-        //-----------------------------------------------------------------
-        // put bodies with real relative distances from Sun's surface
-        double dist;
-        double sunRadius;
-        float factor = param.radiusFactor == param.distanceFactor ? 0 : 1;
-        
-        for(int i = 0; i < bodies.size(); i++){
-
-            
-            if (i == 0){
-                dist = 0;
-                sunRadius = bodies[i].extent;
-            }
-            else{
-                dist = bodies[i].distance + factor*sunRadius;
-            }
-            
-            bodies[i].setPosition(ofVec3f(0, 0, -dist));
-            for(int j = 0; j < bodies[i].moons.size(); j++ ){
-                
-                float moonDist = bodies[i].moons[j].distance + factor*bodies[i].radius;
-                bodies[i].moons[j].setPosition(ofVec3f(0, 0, -moonDist));
                 
             }
-
-            
         }
     }
    
 }
 
-void ofSolarSystem::draw(bool axis, bool textured, bool boundaries){
+//-----------------------------------------------------------------
+// performs two pass draw to avoid bug in textures transparency on back faces
+void ofSolarSystem::draw(bool axis, bool textured){
 
     for(int i = 0; i < bodies.size(); i++){
-        bodies[i].draw(axis, textured, boundaries);
+        bodies[i].draw(axis, textured, false);
     }
-    
-}
-
-void ofSolarSystem::distanceInPercentTo(float percent){
+    for(int i = 0; i < bodies.size(); i++){
+        bodies[i].draw(axis, textured, true);
+    }
     
 }

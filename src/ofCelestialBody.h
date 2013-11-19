@@ -16,14 +16,15 @@ class ofCelestialBody {
 public: // place public functions or variables declarations here
     
     // Constructors
-    ofCelestialBody(string name, double radius, double orbitDistance, double inclination, double rotationPeriod, string textureFileName, string boundariesFileName);
     ofCelestialBody(string name, double radius, double orbitDistance, double inclination, double rotationPeriod, string textureFileName);
     
     // methods, equivalent to specific functions of your class objects
-    void draw(bool axis, bool textured, bool boundaries);    // draw method
+    void draw(bool axis         // draw axis
+            , bool textured     // draw textured or only graticules and meshes
+            , bool ringsPass);  // draw only rings (need to be last drawn for texture alpha to work)
     // variables
     
-    double extent;
+    double extent; // radius + rings + moons (useful for camera views setup)
     double radius;
     double distance; // orbital distance
     double inclination; // orbit to equator inclination
@@ -43,7 +44,6 @@ public: // place public functions or variables declarations here
     
 private: // place private functions or variables declarations here
     
-    ofVboMesh boundariesMesh;
     ofVboMesh graticulesMesh;
     ofVboMesh orbitMesh;
     ofVboMesh ringMesh;
@@ -57,10 +57,6 @@ private: // place private functions or variables declarations here
     
     ofImage texture;
     ofImage ringTexture;
-        
-    void loadSegments( vector< vector<ofPoint> > &segments, string _file);
-    void addToMesh( vector< vector<ofPoint> > &boundaries , ofFloatColor _color );
-
     
     
 };

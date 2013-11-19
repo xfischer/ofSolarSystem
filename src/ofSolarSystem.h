@@ -17,11 +17,14 @@ class ofSolarSystem {
     
 public:
     
-	
-	enum ComparisonMode { SIZE = 0 , DISTANCE = 1 };
+	enum ComparisonMode {
+        SIZE = 0        // Planets are drawn so close that their relative size is obviously HUGE
+        ,DISTANCE = 1   // Planets are drawn at their real distances. Not so good to realize how FAAAAAAR they are
+        ,NOT_SET = -1 };
 
+    void setup(); // whole setup
     void update();
-    void draw(bool axis, bool textured, bool boundaries);
+    void draw(bool axis, bool textured);
         
     ofSolarSystem();
     
@@ -29,9 +32,6 @@ public:
     
     ComparisonMode mode;
     
-    void distanceInPercentTo(float percent); // change planet distances using easing (ofxTween)
-    
-    void setup();
     
 };
 
