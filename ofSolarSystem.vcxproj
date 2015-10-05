@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>emptyExample</RootNamespace>
+    <RootNamespace>ofSolarSystem</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -58,7 +58,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;C:\openFrameworks\addons\ofxSphereCam\src;C:\openFrameworks\addons\ofxTween\src\Easings;C:\openFrameworks\addons\ofxTween\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxSphereCam\libs;..\..\..\addons\ofxSphereCam\src;..\..\..\addons\ofxTween\libs;..\..\..\addons\ofxTween\src;..\..\..\addons\ofxTween\src\Easings</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -75,7 +75,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;C:\openFrameworks\addons\ofxTween\src\Easings;C:\openFrameworks\addons\ofxTween\src;C:\openFrameworks\addons\ofxSphereCam\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxSphereCam\libs;..\..\..\addons\ofxSphereCam\src;..\..\..\addons\ofxTween\libs;..\..\..\addons\ofxTween\src;..\..\..\addons\ofxTween\src\Easings</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -90,6 +90,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ofCelestialBody.cpp" />
+    <ClCompile Include="src\ofSolarSystem.cpp" />
+    <ClCompile Include="src\rd3DUtils.cpp" />
+    <ClCompile Include="src\rdParams.cpp" />
+    <ClCompile Include="src\testApp.cpp" />
     <ClCompile Include="..\..\..\addons\ofxSphereCam\src\ofxSphereCam.cpp" />
     <ClCompile Include="..\..\..\addons\ofxTween\src\Easings\ofxEasing.cpp" />
     <ClCompile Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingBack.cpp" />
@@ -104,15 +110,15 @@
     <ClCompile Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingQuint.cpp" />
     <ClCompile Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingSine.cpp" />
     <ClCompile Include="..\..\..\addons\ofxTween\src\ofxTween.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\ofCelestialBody.cpp" />
-    <ClCompile Include="src\ofSolarSystem.cpp" />
-    <ClCompile Include="src\rd3DUtils.cpp" />
-    <ClCompile Include="src\rdParams.cpp" />
-    <ClCompile Include="src\testApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ofCelestialBody.h" />
+    <ClInclude Include="src\ofSolarSystem.h" />
+    <ClInclude Include="src\rd3DUtils.h" />
+    <ClInclude Include="src\rdParams.h" />
+    <ClInclude Include="src\testApp.h" />
     <ClInclude Include="..\..\..\addons\ofxSphereCam\src\ofxSphereCam.h" />
+    <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\easing_terms_of_use.html" />
     <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\ofxEasing.h" />
     <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingBack.h" />
     <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingBounce.h" />
@@ -126,11 +132,6 @@
     <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingQuint.h" />
     <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingSine.h" />
     <ClInclude Include="..\..\..\addons\ofxTween\src\ofxTween.h" />
-    <ClInclude Include="src\ofCelestialBody.h" />
-    <ClInclude Include="src\ofSolarSystem.h" />
-    <ClInclude Include="src\rd3DUtils.h" />
-    <ClInclude Include="src\rdParams.h" />
-    <ClInclude Include="src\testApp.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">

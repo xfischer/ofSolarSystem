@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\testApp.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
@@ -10,8 +10,20 @@
     <ClCompile Include="src\ofCelestialBody.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxTween\src\ofxTween.cpp">
-      <Filter>addons\ofxTween\src</Filter>
+    <ClCompile Include="src\ofSolarSystem.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rd3DUtils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rdParams.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\testApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxSphereCam\src\ofxSphereCam.cpp">
+      <Filter>addons\ofxSphereCam\src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\addons\ofxTween\src\Easings\ofxEasing.cpp">
       <Filter>addons\ofxTween\src\Easings</Filter>
@@ -49,17 +61,8 @@
     <ClCompile Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingSine.cpp">
       <Filter>addons\ofxTween\src\Easings</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxSphereCam\src\ofxSphereCam.cpp">
-      <Filter>addons\ofxSphereCam\src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ofSolarSystem.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rdParams.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\rd3DUtils.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\..\addons\ofxTween\src\ofxTween.cpp">
+      <Filter>addons\ofxTween\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -67,33 +70,45 @@
       <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
     </Filter>
     <Filter Include="addons">
-      <UniqueIdentifier>{4b332608-563c-4d91-b496-7c1195ce6444}</UniqueIdentifier>
+      <UniqueIdentifier>{71834F65-F3A9-211E-73B8-DC85}</UniqueIdentifier>
     </Filter>
     <Filter Include="addons\ofxSphereCam">
-      <UniqueIdentifier>{107ad175-bbe3-48c8-8c9d-b84cd0c654f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="addons\ofxTween">
-      <UniqueIdentifier>{b92ab6bd-6193-4839-a635-5840f1c1d0e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="addons\ofxTween\src">
-      <UniqueIdentifier>{aa54308f-d11b-48cf-9182-95d71dc47616}</UniqueIdentifier>
+      <UniqueIdentifier>{CD902FDA-135C-55BB-E721-5960}</UniqueIdentifier>
     </Filter>
     <Filter Include="addons\ofxSphereCam\src">
-      <UniqueIdentifier>{a508f3a6-9558-49f9-8e17-006128e90eda}</UniqueIdentifier>
+      <UniqueIdentifier>{E0B1BDAF-2351-9F38-EC28-8C00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxTween">
+      <UniqueIdentifier>{8A8810E8-A79D-7A1D-2F0A-7203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxTween\src">
+      <UniqueIdentifier>{40AC4B42-6A5A-9537-EB82-D1B8}</UniqueIdentifier>
     </Filter>
     <Filter Include="addons\ofxTween\src\Easings">
-      <UniqueIdentifier>{2600ce4c-af3e-4bf3-8145-508757e9653b}</UniqueIdentifier>
+      <UniqueIdentifier>{EF0F6A8B-B04F-E782-21EF-D4BA}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\testApp.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\ofCelestialBody.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxTween\src\ofxTween.h">
-      <Filter>addons\ofxTween\src</Filter>
+    <ClInclude Include="src\ofSolarSystem.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rd3DUtils.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rdParams.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\testApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxSphereCam\src\ofxSphereCam.h">
+      <Filter>addons\ofxSphereCam\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\easing_terms_of_use.html">
+      <Filter>addons\ofxTween\src\Easings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\ofxEasing.h">
       <Filter>addons\ofxTween\src\Easings</Filter>
@@ -131,17 +146,8 @@
     <ClInclude Include="..\..\..\addons\ofxTween\src\Easings\ofxEasingSine.h">
       <Filter>addons\ofxTween\src\Easings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSphereCam\src\ofxSphereCam.h">
-      <Filter>addons\ofxSphereCam\src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ofSolarSystem.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rdParams.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\rd3DUtils.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\..\..\addons\ofxTween\src\ofxTween.h">
+      <Filter>addons\ofxTween\src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
